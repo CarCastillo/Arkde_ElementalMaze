@@ -6,14 +6,33 @@
 #include "GameFramework/Character.h"
 #include "EM_Character.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
 {
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* FPSCameraComponent; 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* TPSCameraComponent;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
+	bool bUseFirstPersonView;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming") 
 	bool bIsLookInversion;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
+	FName FPSCameraSocketName; 
 
 public:
 	// Sets default values for this character's properties
@@ -30,6 +49,12 @@ protected:
 	virtual void Jump() override;
 
 	virtual void StopJumping() override;
+
+	void StartCrouch();
+
+	virtual void Crouch(bool bClientSimulation) override;
+
+	virtual void UnCrouch(bool bClientSimulation) override;
 
 public:	
 	// Called every frame

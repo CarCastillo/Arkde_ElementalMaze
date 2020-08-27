@@ -2,6 +2,10 @@
 
 
 #include "EM_Character.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -9,6 +13,19 @@ AEM_Character::AEM_Character()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseFirstPersonView = true;
+	FPSCameraSocketName = "SCK_Camera";
+
+	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
+	FPSCameraComponent->bUsePawnControlRotation = true;
+	FPSCameraComponent->SetupAttachment(GetMesh(), FPSCameraSocketName);
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->SetupAttachment(RootComponent);
+
+	TPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TPS_CameraComponent"));
+	TPSCameraComponent->SetupAttachment(SpringArmComponent);
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +55,8 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AEM_Character::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AEM_Character::StopJumping);
+
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AEM_Character::StartCrouch);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -60,6 +79,29 @@ void AEM_Character::StopJumping()
 	Super::StopJumping();
 }
 
+void AEM_Character::StartCrouch()
+{
+	if (GetCharacterMovement()->IsCrouching() == false)
+	{
+		Crouch(false);
+	}
+	else
+	{
+		UnCrouch(false);
+	}
+}
+
+void AEM_Character::Crouch(bool bClientSimulation)
+{
+	UE_LOG(LogTemp, Warning, TEXT("IT'S CROUCH TIME"));
+	Super::Crouch();
+}
+
+void AEM_Character::UnCrouch(bool bClientSimulation)
+{
+	UE_LOG(LogTemp, Warning, TEXT("IT'S UNCROUCH TIME"));
+	Super::UnCrouch();
+}
 
 void AEM_Character::AddControllerPitchInput(float value)
 {
