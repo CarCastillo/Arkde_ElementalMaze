@@ -81,7 +81,7 @@ void AEM_Character::StopJumping()
 
 void AEM_Character::StartCrouch()
 {
-	if (GetCharacterMovement()->IsCrouching() == false)
+	if (!GetCharacterMovement()->IsCrouching())
 	{
 		Crouch(false);
 	}
@@ -106,4 +106,14 @@ void AEM_Character::UnCrouch(bool bClientSimulation)
 void AEM_Character::AddControllerPitchInput(float value)
 {
 	Super::AddControllerPitchInput(bIsLookInversion ? -value : value);
+}
+
+void AEM_Character::AddKey(FName NewKey)
+{
+	DoorKeys.Add(NewKey);
+}
+
+bool AEM_Character::HasKey(FName KeyTag)
+{
+	return DoorKeys.Contains(KeyTag);
 }

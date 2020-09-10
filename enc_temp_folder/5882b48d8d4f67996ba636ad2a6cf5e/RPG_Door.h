@@ -31,7 +31,7 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door")
+	UPROPERTY(EditAnywhere, Category = "Door")
 	float openAngle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door")

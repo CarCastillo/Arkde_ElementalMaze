@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
 	FName FPSCameraSocketName; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Key")
+	TArray<FName> DoorKeys;
+
 public:
 	// Sets default values for this character's properties
 	AEM_Character();
@@ -64,4 +67,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void AddControllerPitchInput(float value) override;
+
+	void AddKey(FName NewKey);
+
+	bool HasKey(FName KeyTag);
 };
