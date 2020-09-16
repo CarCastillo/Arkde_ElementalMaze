@@ -11,7 +11,7 @@ AEM_Item::AEM_Item()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	MainColliderComponent = CreateAbstractDefaultSubobject<USphereComponent>(TEXT("MainColliderComponent"));
+	MainColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("MainColliderComponent"));
 	MainColliderComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MainColliderComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MainColliderComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);

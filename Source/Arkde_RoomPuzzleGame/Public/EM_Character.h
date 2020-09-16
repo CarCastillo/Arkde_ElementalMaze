@@ -71,4 +71,10 @@ public:
 	void AddKey(FName NewKey);
 
 	bool HasKey(FName KeyTag);
+
+	void ActivateLaunchPad();
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Launch Pad")
+	bool bIsLaunchPadActivated;
 };

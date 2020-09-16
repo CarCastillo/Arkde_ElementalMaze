@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EM_LaunchPad.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -14,6 +15,7 @@ AEM_Character::AEM_Character()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bUseFirstPersonView = true;
+	bIsLaunchPadActivated = false;
 	FPSCameraSocketName = "SCK_Camera";
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
@@ -32,7 +34,6 @@ AEM_Character::AEM_Character()
 void AEM_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -57,6 +58,8 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AEM_Character::StopJumping);
 
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AEM_Character::StartCrouch);
+
+	PlayerInputComponent->BindAction("Activate", IE_Pressed, this, &AEM_Character::ActivateLaunchPad);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -116,4 +119,10 @@ void AEM_Character::AddKey(FName NewKey)
 bool AEM_Character::HasKey(FName KeyTag)
 {
 	return DoorKeys.Contains(KeyTag);
+}
+
+void AEM_Character::ActivateLaunchPad()
+{
+	bIsLaunchPadActivated = true;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("LAUNCH PAD ACTIVATED!."));
 }
