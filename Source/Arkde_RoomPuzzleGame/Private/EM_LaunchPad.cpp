@@ -24,8 +24,6 @@ AEM_LaunchPad::AEM_LaunchPad()
 void AEM_LaunchPad::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//LaunchPlayer();
 }
 
 void AEM_LaunchPad::Pickup(AEM_Character* CharacterToLaunch)
@@ -34,15 +32,17 @@ void AEM_LaunchPad::Pickup(AEM_Character* CharacterToLaunch)
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("Press Enter, Circle (PlayStation) or B (XBox) to activate the launch pad."));
 
-	if (CharacterToLaunch->bIsLaunchPadActivated)
-	{
-		FRotator LaunchRotation = GetActorRotation();
-		LaunchRotation.Pitch += 90.0f;
-		CharacterToLaunch->LaunchCharacter(LaunchRotation.Vector() * 850.0f, false, false);
+	CharacterToLaunch->CurrentLaunchPad = this;
+}
 
-		FRotator LaunchPadRotation = FRotator(-35.0f, 0.0f, 0.0f);
-		CustomRootComponent->SetRelativeRotation(LaunchPadRotation);
-		CharacterToLaunch->bIsLaunchPadActivated = false;
-	}
+void AEM_LaunchPad::LaunchPlayer(AEM_Character* CharacterToLaunch)
+{
+	FRotator LaunchRotation = GetActorRotation();
+	LaunchRotation.Pitch += 55.0f;
+	CharacterToLaunch->LaunchCharacter(LaunchRotation.Vector() * 1100.0f, false, false);
+
+	FRotator LaunchPadRotation = FRotator(-35.0f, 0.0f, 0.0f);
+	CustomRootComponent->SetRelativeRotation(LaunchPadRotation);
+	CharacterToLaunch->CurrentLaunchPad = nullptr;
 }
 

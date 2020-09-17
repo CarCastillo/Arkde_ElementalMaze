@@ -15,7 +15,6 @@ AEM_Character::AEM_Character()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bUseFirstPersonView = true;
-	bIsLaunchPadActivated = false;
 	FPSCameraSocketName = "SCK_Camera";
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
@@ -123,6 +122,8 @@ bool AEM_Character::HasKey(FName KeyTag)
 
 void AEM_Character::ActivateLaunchPad()
 {
-	bIsLaunchPadActivated = true;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("LAUNCH PAD ACTIVATED!."));
+	if (IsValid(CurrentLaunchPad))
+	{
+		CurrentLaunchPad->LaunchPlayer(this);
+	}
 }

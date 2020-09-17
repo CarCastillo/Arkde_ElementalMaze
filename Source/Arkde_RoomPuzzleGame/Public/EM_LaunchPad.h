@@ -19,8 +19,6 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_LaunchPad : public AEM_Item
 	GENERATED_BODY()
 
 protected:
-
-protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* CustomRootComponent;
 
@@ -36,6 +34,8 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void LaunchPlayer(AEM_Character* CharacterToLaunch);
 
 protected:
 

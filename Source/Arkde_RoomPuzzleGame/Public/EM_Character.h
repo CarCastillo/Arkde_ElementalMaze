@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class AEM_LaunchPad;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
@@ -75,6 +76,5 @@ public:
 	void ActivateLaunchPad();
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Launch Pad")
-	bool bIsLaunchPadActivated;
+	AEM_LaunchPad* CurrentLaunchPad;
 };
