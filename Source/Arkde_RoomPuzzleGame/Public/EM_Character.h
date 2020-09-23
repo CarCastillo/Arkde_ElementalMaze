@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class AEM_LaunchPad;
+class AEM_Weapon;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
@@ -38,9 +39,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Key")
 	TArray<FName> DoorKeys;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<AEM_Weapon> InitialWeaponClass;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	AEM_Weapon* CurrentWeapon;
+
 public:
 	// Sets default values for this character's properties
 	AEM_Character();
+
+	virtual FVector GetPawnViewLocation() const override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,6 +68,12 @@ protected:
 	virtual void Crouch(bool bClientSimulation) override;
 
 	virtual void UnCrouch(bool bClientSimulation) override;
+
+	void CreateInitialWeapon();
+
+	void StartWeaponAction();
+
+	void StopWeaponAction();
 
 public:	
 	// Called every frame

@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EM_LaunchPad.h"
+#include "EM_Weapon.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -29,10 +30,27 @@ AEM_Character::AEM_Character()
 	TPSCameraComponent->SetupAttachment(SpringArmComponent);
 }
 
+FVector AEM_Character::GetPawnViewLocation() const
+{
+	if (IsValid(FPSCameraComponent) && bUseFirstPersonView)
+	{
+		return FPSCameraComponent->GetComponentLocation();
+	}
+
+	if (IsValid(TPSCameraComponent) && !bUseFirstPersonView)
+	{
+		return TPSCameraComponent->GetComponentLocation();
+	}
+
+	return Super::GetPawnViewLocation();
+}
+
 // Called when the game starts or when spawned
 void AEM_Character::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CreateInitialWeapon();
 }
 
 // Called every frame
@@ -59,6 +77,9 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AEM_Character::StartCrouch);
 
 	PlayerInputComponent->BindAction("Activate", IE_Pressed, this, &AEM_Character::ActivateLaunchPad);
+
+	PlayerInputComponent->BindAction("WeaponAction", IE_Pressed, this, &AEM_Character::StartWeaponAction);
+	PlayerInputComponent->BindAction("WeaponAction", IE_Released, this, &AEM_Character::StopWeaponAction);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -74,8 +95,8 @@ void AEM_Character::MoveRight(float value)
 void AEM_Character::Jump()
 {
 	Super::Jump();
-}
 
+}
 void AEM_Character::StopJumping()
 {
 	Super::StopJumping();
@@ -95,14 +116,44 @@ void AEM_Character::StartCrouch()
 
 void AEM_Character::Crouch(bool bClientSimulation)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IT'S CROUCH TIME"));
+	//UE_LOG(LogTemp, Warning, TEXT("IT'S CROUCH TIME"));
 	Super::Crouch();
 }
 
 void AEM_Character::UnCrouch(bool bClientSimulation)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IT'S UNCROUCH TIME"));
+	//UE_LOG(LogTemp, Warning, TEXT("IT'S UNCROUCH TIME"));
 	Super::UnCrouch();
+}
+
+void AEM_Character::CreateInitialWeapon()
+{
+	if (IsValid(InitialWeaponClass))
+	{
+		CurrentWeapon = GetWorld()->SpawnActor<AEM_Weapon>(InitialWeaponClass, GetActorLocation(), GetActorRotation());
+
+		if (IsValid(CurrentWeapon))
+		{
+			CurrentWeapon->SetCharacterOwner(this);
+			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		}
+	}
+}
+
+void AEM_Character::StartWeaponAction()
+{
+	if (IsValid(CurrentWeapon))
+	{
+		CurrentWeapon->StartAction();
+	}
+}
+
+void AEM_Character::StopWeaponAction()
+{
+	if (IsValid(CurrentWeapon))
+	{
+		CurrentWeapon->StopAction();
+	}
 }
 
 void AEM_Character::AddControllerPitchInput(float value)
