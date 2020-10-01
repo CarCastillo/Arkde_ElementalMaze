@@ -9,6 +9,7 @@
 class USceneComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
+class UTextRenderComponent;
 
 /**
  * 
@@ -28,6 +29,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* LaunchPadMeshComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UTextRenderComponent* TextRenderComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Launch Pad")
+	float LaunchAngle;
+
 public:
 	// Sets default values for this actor's properties
 	AEM_LaunchPad();
@@ -36,6 +43,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void LaunchPlayer(AEM_Character* CharacterToLaunch);
+
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 protected:
 
