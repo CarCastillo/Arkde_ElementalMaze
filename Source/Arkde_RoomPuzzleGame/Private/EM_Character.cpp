@@ -116,13 +116,11 @@ void AEM_Character::StartCrouch()
 
 void AEM_Character::Crouch(bool bClientSimulation)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("IT'S CROUCH TIME"));
 	Super::Crouch();
 }
 
 void AEM_Character::UnCrouch(bool bClientSimulation)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("IT'S UNCROUCH TIME"));
 	Super::UnCrouch();
 }
 

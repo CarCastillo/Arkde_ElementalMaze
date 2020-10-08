@@ -14,12 +14,24 @@ AEM_MagicProjectile::AEM_MagicProjectile()
 	TraceLenght = 10000.0f;
 	bDrawLineTrace = false;
 	MuzzleSocketName = "SCK_Muzzle";
+	bAutomaticFire = false;
+	ProjectileCadence = 0.5f;
 }
 
 void AEM_MagicProjectile::StartAction()
 {
 	Super::StartAction();
 
+	FireProjectile();
+
+	if (bAutomaticFire)
+	{
+		GetWorldTimerManager().SetTimer(AutoFireTimer, this, &AEM_MagicProjectile::FireProjectile, ProjectileCadence, true);
+	}
+}
+
+void AEM_MagicProjectile::FireProjectile()
+{
 	AActor* CurrentOwner = GetOwner();
 
 	if (IsValid(CurrentOwner))
@@ -85,11 +97,13 @@ void AEM_MagicProjectile::StartAction()
 				}
 			}
 		}
-		
+
 	}
 }
 
 void AEM_MagicProjectile::StopAction()
 {
 	Super::StopAction();
+
+	GetWorldTimerManager().ClearTimer(AutoFireTimer);
 }

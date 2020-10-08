@@ -42,12 +42,22 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 	UParticleSystem* TraceEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	bool bAutomaticFire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon|Projectile")
+	float ProjectileCadence;
 	
 protected:
 
 	virtual void StartAction() override;
 
 	virtual void StopAction() override;
+
+	void FireProjectile();
+
+	FTimerHandle AutoFireTimer;
 
 };
 
