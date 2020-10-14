@@ -32,6 +32,5 @@ protected:
 
 	virtual void StartAction() override;
 
-	virtual void StopAction() override;
-	
+	virtual void StopAction() override;	
 };

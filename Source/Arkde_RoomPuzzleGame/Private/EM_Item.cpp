@@ -12,11 +12,6 @@ AEM_Item::AEM_Item()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MainColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("MainColliderComponent"));
-	MainColliderComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	MainColliderComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	MainColliderComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	MainColliderComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
-	MainColliderComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RootComponent = MainColliderComponent;
 }
 
