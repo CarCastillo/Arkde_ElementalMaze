@@ -50,4 +50,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterOwner(ACharacter* NewOwner);
+
+	UFUNCTION(BlueprintCallable)
+	ACharacter* GetCharacterOwner() { return CurrentOwnerCharacter; };
 };

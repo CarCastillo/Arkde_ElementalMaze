@@ -10,6 +10,7 @@ class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
 class ACharacter;
+class UDamageType;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_OrbProjectile : public AActor
@@ -36,13 +37,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Orb Launcher")
 	float OrbDestroyDelay;
 
-	ACharacter* CurrentOwnerCharacter;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Orb Launcher")
+	float OrbDamage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TSubclassOf<UDamageType> DamageType;
+
+	AActor* OwnerWeapon;
 	
 public:	
 	// Sets default values for this actor's properties
 	AEM_OrbProjectile();
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	void SetOwnerWeapon(AActor* NewOwner) { OwnerWeapon = NewOwner; };
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,7 +69,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetCharacterOwner(ACharacter* NewOwner);
 };

@@ -25,6 +25,11 @@ void AEM_OrbLauncher::StartAction()
 			FRotator MuzzleSocketRotation = CharacterMeshComponent->GetSocketRotation(MuzzleSocketName);
 
 			AEM_OrbProjectile* CurrentOrbProjectile = GetWorld()->SpawnActor<AEM_OrbProjectile>(OrbProjectileClass, MuzzleSocketLocation, MuzzleSocketRotation);
+
+			if (CurrentOrbProjectile)
+			{
+				CurrentOrbProjectile->SetOwnerWeapon(this);
+			}
 		}
 	}
 }

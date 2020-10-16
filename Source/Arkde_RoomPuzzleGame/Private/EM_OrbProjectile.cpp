@@ -10,12 +10,14 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "EM_Character.h"
 #include "DrawDebugHelpers.h"
+#include "EM_Weapon.h"
 
 // Sets default values
 AEM_OrbProjectile::AEM_OrbProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	OrbDamage = 100.f;
 	OrbExplodeDelay = 3.0f;
 	OrbDestroyDelay = 0.3f;
 
@@ -40,10 +42,9 @@ void AEM_OrbProjectile::BeginPlay()
 
 void AEM_OrbProjectile::ExplodeOrbProjectile()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "EXPLODE ORB!");
-	// OrbProjectileMesh->SetRelativeScale3D(FVector(8, 8, 8));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "EXPLODE ORB!");
+	OrbProjectileMesh->SetRelativeScale3D(FVector(8, 8, 8));
 	DrawDebugSphere(GetWorld(), OrbProjectileMesh->GetComponentLocation(), 150.0f, 32, FColor::Blue, false, 2.0f);
-	// OrbProjectileMesh->SetRelativeLocation(FVector(0, 8, 0));
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, OrbProjectileMesh);
 	GetWorldTimerManager().SetTimer(OrbDestroyTimer, this, &AEM_OrbProjectile::DestroyOrbProjectile, OrbDestroyDelay, true);
 }
@@ -52,18 +53,20 @@ void AEM_OrbProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	AActor* CurrentOwner = GetOwner();
-
-	// TO DO: Make orb projectile explode only with enemy collision
-	/*if (IsValid(OtherActor) && (OtherActor != CurrentOwner))
+	if (IsValid(OtherActor) && OtherActor != OwnerWeapon)
 	{
-		AEM_Character* OverlappedCharacter = Cast<AEM_Character>(OtherActor);
+		AEM_Weapon* Weapon = Cast<AEM_Weapon>(OwnerWeapon);
 
-		if (IsValid(OverlappedCharacter))
+		if (IsValid(Weapon))
 		{
-			ExplodeOrbProjectile();
+			if (Weapon->GetCharacterOwner() != OtherActor)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "DAMAGE ENEMY!");
+				UGameplayStatics::ApplyRadialDamage(GetWorld(), OrbDamage, GetActorLocation(), 150.0f, DamageType, TArray<AActor*>(), this, Weapon->GetCharacterOwner()->GetInstigatorController(), true, ECC_Visibility);
+				ExplodeOrbProjectile();
+			}
 		}
-	}*/
+	}
 }
 
 void AEM_OrbProjectile::DestroyOrbProjectile()
@@ -77,14 +80,5 @@ void AEM_OrbProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void AEM_OrbProjectile::SetCharacterOwner(ACharacter* NewOwner)
-{
-	if (IsValid(NewOwner))
-	{
-		SetOwner(NewOwner);
-		CurrentOwnerCharacter = NewOwner;
-	}
 }
 
