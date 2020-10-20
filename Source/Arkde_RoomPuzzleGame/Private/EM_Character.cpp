@@ -80,6 +80,9 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("WeaponAction", IE_Pressed, this, &AEM_Character::StartWeaponAction);
 	PlayerInputComponent->BindAction("WeaponAction", IE_Released, this, &AEM_Character::StopWeaponAction);
+
+	PlayerInputComponent->BindAction("Melee", IE_Pressed, this, &AEM_Character::StartMelee);
+	PlayerInputComponent->BindAction("Melee", IE_Released, this, &AEM_Character::StopMelee);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -152,6 +155,16 @@ void AEM_Character::StopWeaponAction()
 	{
 		CurrentWeapon->StopAction();
 	}
+}
+
+void AEM_Character::StartMelee()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Player starts melee action"));
+}
+
+void AEM_Character::StopMelee()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Player stops melee action"));
 }
 
 void AEM_Character::AddControllerPitchInput(float value)

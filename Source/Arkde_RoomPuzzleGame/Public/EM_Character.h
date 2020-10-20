@@ -75,6 +75,10 @@ protected:
 
 	void StopWeaponAction();
 
+	void StartMelee();
+
+	void StopMelee();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
