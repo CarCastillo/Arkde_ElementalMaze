@@ -2,21 +2,26 @@
 
 
 #include "EM_Character.h"
+#include "Arkde_RoomPuzzleGame/Arkde_RoomPuzzleGame.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EM_LaunchPad.h"
 #include "EM_Weapon.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	bUseFirstPersonView = true;
 	FPSCameraSocketName = "SCK_Camera";
+	MeleeSocketName = "SCK_Melee";
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -28,6 +33,11 @@ AEM_Character::AEM_Character()
 
 	TPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TPS_CameraComponent"));
 	TPSCameraComponent->SetupAttachment(SpringArmComponent);
+
+	MeleeDetectorComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeDetectorComponent"));
+	MeleeDetectorComponent->SetupAttachment(GetMesh(), MeleeSocketName);
+	MeleeDetectorComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	MeleeDetectorComponent->SetCollisionResponseToChannel(COLLISION_ENEMY, ECR_Overlap);
 }
 
 FVector AEM_Character::GetPawnViewLocation() const
@@ -50,7 +60,16 @@ void AEM_Character::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitializeReferences();
 	CreateInitialWeapon();
+}
+
+void AEM_Character::InitializeReferences()
+{
+	if (IsValid(GetMesh()))
+	{
+		MyAnimInstance = GetMesh()->GetAnimInstance();
+	}
 }
 
 // Called every frame
@@ -159,7 +178,10 @@ void AEM_Character::StopWeaponAction()
 
 void AEM_Character::StartMelee()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player starts melee action"));
+	if (IsValid(MyAnimInstance) && IsValid(MeleeMontage))
+	{
+		MyAnimInstance->Montage_Play(MeleeMontage);
+	}
 }
 
 void AEM_Character::StopMelee()
