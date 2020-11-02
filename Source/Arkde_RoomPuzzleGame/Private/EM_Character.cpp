@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -21,7 +22,9 @@ AEM_Character::AEM_Character()
 
 	bUseFirstPersonView = true;
 	FPSCameraSocketName = "SCK_Camera";
+	MeleeDamage = 10.0f;
 	MeleeSocketName = "SCK_Melee";
+	bCanUseProjectile = true;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -38,6 +41,7 @@ AEM_Character::AEM_Character()
 	MeleeDetectorComponent->SetupAttachment(GetMesh(), MeleeSocketName);
 	MeleeDetectorComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MeleeDetectorComponent->SetCollisionResponseToChannel(COLLISION_ENEMY, ECR_Overlap);
+	MeleeDetectorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 FVector AEM_Character::GetPawnViewLocation() const
@@ -62,6 +66,7 @@ void AEM_Character::BeginPlay()
 
 	InitializeReferences();
 	CreateInitialWeapon();
+	MeleeDetectorComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_Character::MakeMeleeDamage);
 }
 
 void AEM_Character::InitializeReferences()
@@ -162,6 +167,11 @@ void AEM_Character::CreateInitialWeapon()
 
 void AEM_Character::StartWeaponAction()
 {
+	if (!bCanUseProjectile)
+	{
+		return;
+	}
+
 	if (IsValid(CurrentWeapon))
 	{
 		CurrentWeapon->StartAction();
@@ -170,6 +180,11 @@ void AEM_Character::StartWeaponAction()
 
 void AEM_Character::StopWeaponAction()
 {
+	if (!bCanUseProjectile)
+	{
+		return;
+	}
+
 	if (IsValid(CurrentWeapon))
 	{
 		CurrentWeapon->StopAction();
@@ -178,15 +193,30 @@ void AEM_Character::StopWeaponAction()
 
 void AEM_Character::StartMelee()
 {
+	if (bIsDoingMelee)
+	{
+		return;
+	}
+
 	if (IsValid(MyAnimInstance) && IsValid(MeleeMontage))
 	{
 		MyAnimInstance->Montage_Play(MeleeMontage);
 	}
+
+	SetMeleeState(true);
 }
 
 void AEM_Character::StopMelee()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Player stops melee action"));
+}
+
+void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (IsValid(OtherActor))
+	{
+		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
+	}
 }
 
 void AEM_Character::AddControllerPitchInput(float value)
@@ -210,4 +240,15 @@ void AEM_Character::ActivateLaunchPad()
 	{
 		CurrentLaunchPad->LaunchPlayer(this);
 	}
+}
+
+void AEM_Character::SetMeleeDetectorCollision(ECollisionEnabled::Type NewCollisionState)
+{
+	MeleeDetectorComponent->SetCollisionEnabled(NewCollisionState);
+}
+
+void AEM_Character::SetMeleeState(bool NewState)
+{
+	bIsDoingMelee = NewState;
+	bCanUseProjectile = !NewState;
 }

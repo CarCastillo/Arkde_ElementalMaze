@@ -42,6 +42,15 @@ protected:
 	FName FPSCameraSocketName;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Melee")
+	float MeleeDamage;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Melee")
+	bool bIsDoingMelee;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	bool bCanUseProjectile;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Melee")
 	FName MeleeSocketName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Key")
@@ -63,6 +72,8 @@ public:
 	AEM_Character();
 
 	virtual FVector GetPawnViewLocation() const override;
+
+	AEM_LaunchPad* CurrentLaunchPad;
 
 protected:
 	// Called when the game starts or when spawned
@@ -94,6 +105,9 @@ protected:
 
 	void StopMelee();
 
+	UFUNCTION()
+	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -109,6 +123,7 @@ public:
 
 	void ActivateLaunchPad();
 
-public:
-	AEM_LaunchPad* CurrentLaunchPad;
+	void SetMeleeDetectorCollision(ECollisionEnabled::Type NewCollisionState);
+
+	void SetMeleeState(bool NewState);
 };
