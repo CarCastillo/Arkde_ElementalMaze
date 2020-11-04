@@ -25,6 +25,8 @@ AEM_Character::AEM_Character()
 	MeleeDamage = 10.0f;
 	MeleeSocketName = "SCK_Melee";
 	bCanUseProjectile = true;
+	MaxNumComboMultiplier = 4.0f;
+	CurrentNumComboMultiplier = 1.0f;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -193,9 +195,32 @@ void AEM_Character::StopWeaponAction()
 
 void AEM_Character::StartMelee()
 {
-	if (bIsDoingMelee)
+	if (bIsDoingMelee && !bCanMakeCombos)
 	{
 		return;
+	}
+
+	if (bCanMakeCombos)
+	{
+		if (bIsDoingMelee)
+		{
+			if (bIsComboEnabled)
+			{
+				if (CurrentNumComboMultiplier < MaxNumComboMultiplier)
+				{
+					CurrentNumComboMultiplier++;
+					SetComboEnabled(false);
+				}
+				else
+				{
+					return;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
 	}
 
 	if (IsValid(MyAnimInstance) && IsValid(MeleeMontage))
@@ -215,7 +240,7 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 {
 	if (IsValid(OtherActor))
 	{
-		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
+		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
 	}
 }
 
@@ -251,4 +276,15 @@ void AEM_Character::SetMeleeState(bool NewState)
 {
 	bIsDoingMelee = NewState;
 	bCanUseProjectile = !NewState;
+}
+
+void AEM_Character::SetComboEnabled(bool NewState)
+{
+	bIsComboEnabled = NewState;
+}
+
+void AEM_Character::ResetCombo()
+{
+	SetComboEnabled(false);
+	CurrentNumComboMultiplier = 1.0f;
 }
