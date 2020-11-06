@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UStaticMeshComponent;
 class AEM_LaunchPad;
 class AEM_Weapon;
 class UAnimMontage;
@@ -56,6 +57,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Melee")
 	float MeleeDamage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Timers")
+	float FakeWallDestroyDelay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Impulse")
+	float ForceOfImpulse;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsDoingMelee;
 
@@ -78,6 +85,10 @@ protected:
 	UAnimMontage* MeleeMontage;
 
 	UAnimInstance* MyAnimInstance;
+
+	FTimerDelegate FakeWallTimerDel;
+
+	FTimerHandle FakeWallDestroyTimer;
 
 public:
 	// Sets default values for this character's properties
@@ -116,6 +127,8 @@ protected:
 	void StartMelee();
 
 	void StopMelee();
+
+	void DestroyFakeWall(AActor* DestructibleActor);
 
 	UFUNCTION()
 	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

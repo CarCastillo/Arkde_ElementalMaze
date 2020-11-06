@@ -12,6 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -27,6 +28,8 @@ AEM_Character::AEM_Character()
 	bCanUseProjectile = true;
 	MaxNumComboMultiplier = 4.0f;
 	CurrentNumComboMultiplier = 1.0f;
+	FakeWallDestroyDelay = 3.0f;
+	ForceOfImpulse = 2000000.0f;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -43,6 +46,7 @@ AEM_Character::AEM_Character()
 	MeleeDetectorComponent->SetupAttachment(GetMesh(), MeleeSocketName);
 	MeleeDetectorComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MeleeDetectorComponent->SetCollisionResponseToChannel(COLLISION_ENEMY, ECR_Overlap);
+	MeleeDetectorComponent->SetCollisionResponseToChannel(ECC_Destructible, ECR_Overlap);
 	MeleeDetectorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
@@ -233,14 +237,34 @@ void AEM_Character::StartMelee()
 
 void AEM_Character::StopMelee()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player stops melee action"));
+	// UE_LOG(LogTemp, Warning, TEXT("Player stops melee action"));
+}
+
+void AEM_Character::DestroyFakeWall(AActor* DestructibleActor)
+{
+	GetWorldTimerManager().ClearTimer(FakeWallDestroyTimer);
+	DestructibleActor->Destroy();
 }
 
 void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (IsValid(OtherActor))
 	{
-		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
+		UStaticMeshComponent* OtherActorMeshComp = nullptr;
+		OtherActorMeshComp = Cast<UStaticMeshComponent>(OtherActor->GetRootComponent());
+
+		if (IsValid(OtherActorMeshComp))
+		{
+			if (OtherActorMeshComp->GetCollisionObjectType() == ECollisionChannel::ECC_Destructible)
+			{
+				OtherActorMeshComp->SetSimulatePhysics(true);
+				OtherActorMeshComp->AddImpulse(GetActorForwardVector() * ForceOfImpulse);
+				FakeWallTimerDel = FTimerDelegate::CreateUObject(this, &AEM_Character::DestroyFakeWall, OtherActor);
+				GetWorldTimerManager().SetTimer(FakeWallDestroyTimer, FakeWallTimerDel, FakeWallDestroyDelay, true);
+			}
+		}
+
+		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);	
 	}
 }
 
