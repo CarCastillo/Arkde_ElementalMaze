@@ -14,6 +14,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "EM_HealthComponent.h"
+#include "EM_GameMode.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -48,6 +50,8 @@ AEM_Character::AEM_Character()
 	MeleeDetectorComponent->SetCollisionResponseToChannel(COLLISION_ENEMY, ECR_Overlap);
 	MeleeDetectorComponent->SetCollisionResponseToChannel(ECC_Destructible, ECR_Overlap);
 	MeleeDetectorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
 }
 
 FVector AEM_Character::GetPawnViewLocation() const
@@ -72,7 +76,9 @@ void AEM_Character::BeginPlay()
 
 	InitializeReferences();
 	CreateInitialWeapon();
+
 	MeleeDetectorComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_Character::MakeMeleeDamage);
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Character::OnHealthChange);
 }
 
 void AEM_Character::InitializeReferences()
@@ -81,6 +87,8 @@ void AEM_Character::InitializeReferences()
 	{
 		MyAnimInstance = GetMesh()->GetAnimInstance();
 	}
+
+	GameModeReference = Cast<AEM_GameMode>(GetWorld()->GetAuthGameMode());
 }
 
 // Called every frame
@@ -265,6 +273,17 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 		}
 
 		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);	
+	}
+}
+
+void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (HealthComponent->IsDead())
+	{
+		if (IsValid(GameModeReference))
+		{
+			GameModeReference->GameOver(this);
+		}
 	}
 }
 

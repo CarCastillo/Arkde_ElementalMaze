@@ -7,6 +7,7 @@
 #include "EM_GameMode.generated.h"
 
 class AEM_Character;
+class AEM_SpectatingCamera;
 
 /**
  * 
@@ -16,17 +17,36 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spectating Camera")
+	float SpectatingBlendTime;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
+	AEM_SpectatingCamera* VictoryCamera;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
+	AEM_SpectatingCamera* GameOverCamera;
+
+protected:
+
+	virtual void BeginPlay() override;
+
+	void SetupSpectatingCameras();
+
+	void MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_SpectatingCamera* SpectatingCamera);
+ 
 public:
 	
 	UFUNCTION()
 	void Victory(AEM_Character* Character);
 	
 	UFUNCTION()
-	void GameOver();
+	void GameOver(AEM_Character* Character);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void BP_Victory(AEM_Character* Character);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void BP_GameOver();
+	void BP_GameOver(AEM_Character* Character);
 };

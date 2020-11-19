@@ -13,6 +13,8 @@ class AEM_LaunchPad;
 class AEM_Weapon;
 class UAnimMontage;
 class UAnimInstance;
+class UEM_HealthComponent;
+class AEM_GameMode;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
@@ -32,6 +34,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCapsuleComponent* MeleeDetectorComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UEM_HealthComponent* HealthComponent;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
 	bool bUseFirstPersonView;
@@ -47,6 +52,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsComboEnabled;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Over")
+	bool bHasToDestroy;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Melee", meta = (EditCondition = bCanMakeCombos, ClampMin = 1.0, UIMin = 1.0))
 	float MaxNumComboMultiplier;
@@ -89,6 +97,8 @@ protected:
 	FTimerDelegate FakeWallTimerDel;
 
 	FTimerHandle FakeWallDestroyTimer;
+
+	AEM_GameMode* GameModeReference;
 
 public:
 	// Sets default values for this character's properties
@@ -133,6 +143,9 @@ protected:
 	UFUNCTION()
 	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -157,4 +170,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetCombo();
+
+	bool HasToDestroy() { return bHasToDestroy; };
 };
