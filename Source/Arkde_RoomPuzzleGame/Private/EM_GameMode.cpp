@@ -8,6 +8,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "EM_SpectatingCamera.h"
 
+AEM_GameMode::AEM_GameMode()
+{
+	BlendTimeDelay = 2.0f;
+}
+
 void AEM_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -20,7 +25,7 @@ void AEM_GameMode::SetupSpectatingCameras()
 	TArray<AActor*> SpectatingCameraActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEM_SpectatingCamera::StaticClass(), SpectatingCameraActors);
 
-	if (SpectatingCameraActors.Num() < 0)
+	if (SpectatingCameraActors.Num() > 0)
 	{
 		for (AActor* SpectatingActor : SpectatingCameraActors)
 		{
@@ -48,8 +53,10 @@ void AEM_GameMode::SetupSpectatingCameras()
 
 void AEM_GameMode::MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_SpectatingCamera* SpectatingCamera)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Enter to MoveCameraToSpectatingPoint function"));
 	if (!IsValid(Character) || !IsValid(SpectatingCamera))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Not valid Character or SpectatingCamera"));
 		return;
 	}
 
@@ -61,7 +68,7 @@ void AEM_GameMode::MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_Spe
 
 		if (IsValid(PlayerController))
 		{
-			PlayerController->SetViewTargetWithBlend(SpectatingCamera, SpectatingBlendTime, EViewTargetBlendFunction::VTBlend_Cubic);
+			PlayerController->SetViewTargetWithBlend(SpectatingCamera, SpectatingBlendTimeDuration, EViewTargetBlendFunction::VTBlend_Cubic);
 		}
 	}
 }
@@ -88,7 +95,9 @@ void AEM_GameMode::GameOver(AEM_Character* Character)
 	else
 	{
 		Character->DisableInput(nullptr);
-		MoveCameraToSpectatingPoint(Character, GameOverCamera);
+		CameraBlendTimerDel = FTimerDelegate::CreateUObject(this, &AEM_GameMode::MoveCameraToSpectatingPoint, Character, GameOverCamera);
+		GetWorldTimerManager().SetTimer(CameraBlendTimer, CameraBlendTimerDel, BlendTimeDelay, true);
+		// MoveCameraToSpectatingPoint(Character, GameOverCamera);
 	}
 
 	BP_GameOver(Character);

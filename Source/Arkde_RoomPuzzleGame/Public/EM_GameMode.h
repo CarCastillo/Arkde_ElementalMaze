@@ -20,13 +20,20 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_GameMode : public AGameModeBase
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spectating Camera")
-	float SpectatingBlendTime;
+	float SpectatingBlendTimeDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spectating Camera")
+	float BlendTimeDelay;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
 	AEM_SpectatingCamera* VictoryCamera;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
 	AEM_SpectatingCamera* GameOverCamera;
+
+	FTimerDelegate CameraBlendTimerDel;
+
+	FTimerHandle CameraBlendTimer;
 
 protected:
 
@@ -37,6 +44,8 @@ protected:
 	void MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_SpectatingCamera* SpectatingCamera);
  
 public:
+
+	AEM_GameMode();
 	
 	UFUNCTION()
 	void Victory(AEM_Character* Character);
