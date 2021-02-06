@@ -42,7 +42,6 @@ void AEM_ExplosiveMine::ActivateAlert(UPrimitiveComponent* OverlappedComponent, 
 
 		if (IsValid(OverlappedCharacter))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Actor is overlapping mine collider"));
 			AlertLightComponent->SetIntensity(3000.0f);
 		}
 	}
@@ -57,7 +56,7 @@ void AEM_ExplosiveMine::ExplodeMine(UPrimitiveComponent* OverlappedComponent, AA
 		if (IsValid(OverlappedCharacter))
 		{
 			Explode();
-			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 150.0f, DamageType, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 200.0f, DamageType, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
 		}
 	}
 }

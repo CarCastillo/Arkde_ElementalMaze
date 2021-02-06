@@ -31,12 +31,13 @@ void AEM_MazeTrap::Tick(float DeltaTime)
 
 void AEM_MazeTrap::Explode()
 {
-	UE_LOG(LogTemp, Warning, TEXT("EXPLODEE MINE!!!"));
-	DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 150.0f, 32, FColor::Red, false, 2.0f);
+	DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 200.0f, 32, FColor::Red, false, 2.0f);
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, CustomRootComponent);
+	//DestroyTrap();
 }
 
 void AEM_MazeTrap::DestroyTrap()
 {
+	// TODO: Destroy actor after 2 seconds
 }
 
