@@ -97,7 +97,6 @@ void AEM_GameMode::GameOver(AEM_Character* Character)
 		Character->DisableInput(nullptr);
 		CameraBlendTimerDel = FTimerDelegate::CreateUObject(this, &AEM_GameMode::MoveCameraToSpectatingPoint, Character, GameOverCamera);
 		GetWorldTimerManager().SetTimer(CameraBlendTimer, CameraBlendTimerDel, BlendTimeDelay, true);
-		// MoveCameraToSpectatingPoint(Character, GameOverCamera);
 	}
 
 	BP_GameOver(Character);
