@@ -98,6 +98,10 @@ protected:
 
 	FTimerHandle FakeWallDestroyTimer;
 
+	FTimerHandle StatusEffectTimer;
+
+	FTimerHandle StatusEffectDPSTimer;
+
 	AEM_GameMode* GameModeReference;
 
 public:
@@ -140,6 +144,10 @@ protected:
 
 	void DestroyFakeWall(AActor* DestructibleActor);
 
+	void RemovePoisonStatusEffect();
+
+	void MakeDamagePerSecond();
+
 	UFUNCTION()
 	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -164,6 +172,8 @@ public:
 	void SetMeleeDetectorCollision(ECollisionEnabled::Type NewCollisionState);
 
 	void SetMeleeState(bool NewState);
+
+	void SetPoisonStatusEffect();
 
 	UFUNCTION(BlueprintCallable)
 	void SetComboEnabled(bool NewState);

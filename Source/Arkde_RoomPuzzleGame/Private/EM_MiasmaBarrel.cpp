@@ -23,7 +23,7 @@ AEM_MiasmaBarrel::AEM_MiasmaBarrel()
 
 	MiasmaColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("MiasmaColliderComponent"));
 	MiasmaColliderComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
+	MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	MiasmaColliderComponent->SetupAttachment(RootComponent);
 
 	BarrelMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrelMeshComponent"));
@@ -45,6 +45,7 @@ void AEM_MiasmaBarrel::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AA
 	if (HealthComponent->IsDead())
 	{
 		Explode(BarrelDestroyTime);
+		MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	}
 }
 
@@ -56,7 +57,7 @@ void AEM_MiasmaBarrel::SpreadMiasma(UPrimitiveComponent* OverlappedComponent, AA
 
 		if (IsValid(OverlappedCharacter))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "SPREAD MIASMA!");
+			OverlappedCharacter->SetPoisonStatusEffect();
 			DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 300.0f, 32, FColor::Red, false, 2.0f);
 		}
 	}

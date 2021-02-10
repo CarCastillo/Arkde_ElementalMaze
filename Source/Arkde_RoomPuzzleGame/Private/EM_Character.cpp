@@ -95,7 +95,6 @@ void AEM_Character::InitializeReferences()
 void AEM_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -319,6 +318,27 @@ void AEM_Character::SetMeleeState(bool NewState)
 {
 	bIsDoingMelee = NewState;
 	bCanUseProjectile = !NewState;
+}
+
+void AEM_Character::SetPoisonStatusEffect()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Character has been poisoned!");
+	GetWorldTimerManager().SetTimer(StatusEffectTimer, this, &AEM_Character::RemovePoisonStatusEffect, 5.0f, true);
+	GetWorldTimerManager().SetTimer(StatusEffectDPSTimer, this, &AEM_Character::MakeDamagePerSecond, 1.0f, true);
+	
+}
+
+void AEM_Character::RemovePoisonStatusEffect()
+{
+	GetWorldTimerManager().ClearTimer(StatusEffectTimer);
+	GetWorldTimerManager().ClearTimer(StatusEffectDPSTimer);
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, "Character is not poisoned anymore!");
+}
+
+void AEM_Character::MakeDamagePerSecond()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, "Character received 10 damage!");
+	AActor::TakeDamage(10.0f, FDamageEvent(), GetInstigatorController(), nullptr);
 }
 
 void AEM_Character::SetComboEnabled(bool NewState)
