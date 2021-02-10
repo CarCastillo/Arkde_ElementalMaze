@@ -6,7 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/PointLightComponent.h"
 #include "EM_Character.h"
+#include "EM_Weapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "EM_HealthComponent.h"
 
 AEM_ExplosiveMine::AEM_ExplosiveMine()
 {
@@ -24,6 +26,8 @@ AEM_ExplosiveMine::AEM_ExplosiveMine()
 	AlertLightComponent = CreateDefaultSubobject<UPointLightComponent>(TEXT("AlertLightComponent"));
 	AlertLightComponent->SetIntensity(0.0f);
 	AlertLightComponent->SetupAttachment(RootComponent);
+
+	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
 }
 
 void AEM_ExplosiveMine::BeginPlay()
@@ -32,6 +36,15 @@ void AEM_ExplosiveMine::BeginPlay()
 
 	OuterColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_ExplosiveMine::ActivateAlert);
 	InnerColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_ExplosiveMine::ExplodeMine);
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_ExplosiveMine::OnHealthChange);
+}
+
+void AEM_ExplosiveMine::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (HealthComponent->IsDead())
+	{
+		Explode();
+	}
 }
 
 void AEM_ExplosiveMine::ActivateAlert(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -56,7 +69,7 @@ void AEM_ExplosiveMine::ExplodeMine(UPrimitiveComponent* OverlappedComponent, AA
 		if (IsValid(OverlappedCharacter))
 		{
 			Explode();
-			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 200.0f, DamageType, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
+			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 200.0f, nullptr, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
 		}
 	}
 }

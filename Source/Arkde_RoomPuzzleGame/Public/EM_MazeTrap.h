@@ -22,6 +22,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 	UParticleSystem* ExplodeEffect;
+
+protected:
+
+	FTimerHandle TrapDestroyTimer;
 	
 public:	
 	// Sets default values for this actor's properties

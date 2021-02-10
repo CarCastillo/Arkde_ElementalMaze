@@ -33,11 +33,11 @@ void AEM_MazeTrap::Explode()
 {
 	DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 200.0f, 32, FColor::Red, false, 2.0f);
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, CustomRootComponent);
-	//DestroyTrap();
+	GetWorldTimerManager().SetTimer(TrapDestroyTimer, this, &AEM_MazeTrap::DestroyTrap, 2.0f, true);
 }
 
 void AEM_MazeTrap::DestroyTrap()
 {
-	// TODO: Destroy actor after 2 seconds
+	Destroy();
 }
 

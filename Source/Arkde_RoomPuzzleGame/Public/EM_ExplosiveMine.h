@@ -11,6 +11,7 @@ class USphereComponent;
 class UStaticMeshComponent;
 class UPointLightComponent;
 class UParticleSystem;
+class UEM_HealthComponent;
 
 /**
  * 
@@ -33,17 +34,20 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UPointLightComponent* AlertLightComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UEM_HealthComponent* HealthComponent;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosive Mine")
 	float ExplodeDamage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-	TSubclassOf<UDamageType> DamageType;
-
 protected:
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 public:
 

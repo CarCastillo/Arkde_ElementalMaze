@@ -42,7 +42,6 @@ void AEM_OrbProjectile::BeginPlay()
 
 void AEM_OrbProjectile::ExplodeOrbProjectile()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "EXPLODE ORB!");
 	OrbProjectileMesh->SetRelativeScale3D(FVector(8, 8, 8));
 	DrawDebugSphere(GetWorld(), OrbProjectileMesh->GetComponentLocation(), 150.0f, 32, FColor::Blue, false, 2.0f);
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, OrbProjectileMesh);
