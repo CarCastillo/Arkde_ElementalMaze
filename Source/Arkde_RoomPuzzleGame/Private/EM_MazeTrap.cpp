@@ -29,11 +29,10 @@ void AEM_MazeTrap::Tick(float DeltaTime)
 
 }
 
-void AEM_MazeTrap::Explode()
+void AEM_MazeTrap::Explode(float DestroyTime)
 {
-	DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 200.0f, 32, FColor::Red, false, 2.0f);
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, CustomRootComponent);
-	GetWorldTimerManager().SetTimer(TrapDestroyTimer, this, &AEM_MazeTrap::DestroyTrap, 2.0f, true);
+	GetWorldTimerManager().SetTimer(TrapDestroyTimer, this, &AEM_MazeTrap::DestroyTrap, DestroyTime, true);
 }
 
 void AEM_MazeTrap::DestroyTrap()

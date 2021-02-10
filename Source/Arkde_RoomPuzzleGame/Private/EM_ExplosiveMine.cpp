@@ -8,11 +8,13 @@
 #include "EM_Character.h"
 #include "EM_Weapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 #include "EM_HealthComponent.h"
 
 AEM_ExplosiveMine::AEM_ExplosiveMine()
 {
 	ExplodeDamage = 100.0f;
+	MineDestroyTime = 1.0f;
 
 	OuterColliderComponent = CreateDefaultSubobject<USphereComponent>(TEXT("OuterColliderComponent"));
 	OuterColliderComponent->SetupAttachment(RootComponent);
@@ -43,7 +45,7 @@ void AEM_ExplosiveMine::OnHealthChange(UEM_HealthComponent* MyHealthComponent, A
 {
 	if (HealthComponent->IsDead())
 	{
-		Explode();
+		Explode(MineDestroyTime);
 	}
 }
 
@@ -68,7 +70,8 @@ void AEM_ExplosiveMine::ExplodeMine(UPrimitiveComponent* OverlappedComponent, AA
 
 		if (IsValid(OverlappedCharacter))
 		{
-			Explode();
+			Explode(MineDestroyTime);
+			DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 200.0f, 32, FColor::Red, false, 2.0f);
 			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 200.0f, nullptr, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
 		}
 	}

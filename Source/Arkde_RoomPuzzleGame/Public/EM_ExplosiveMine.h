@@ -39,8 +39,11 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosive Mine")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion")
 	float ExplodeDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion")
+	float MineDestroyTime;
 
 protected:
 
