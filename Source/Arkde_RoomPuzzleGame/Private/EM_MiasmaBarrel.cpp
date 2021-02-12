@@ -54,7 +54,6 @@ void AEM_MiasmaBarrel::SpreadMiasma(UPrimitiveComponent* OverlappedComponent, AA
 	if (IsValid(OtherActor))
 	{
 		AEM_Character* OverlappedCharacter = Cast<AEM_Character>(OtherActor);
-		AActor* OverlappedEnemy = Cast<AActor>(OtherActor);
 
 		if (IsValid(OverlappedCharacter))
 		{
