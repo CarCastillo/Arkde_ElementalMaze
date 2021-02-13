@@ -29,7 +29,7 @@ void AEM_MazeTrap::Tick(float DeltaTime)
 
 }
 
-void AEM_MazeTrap::Explode(float DestroyTime)
+void AEM_MazeTrap::SetExplosionEffect(float DestroyTime)
 {
 	UGameplayStatics::SpawnEmitterAttached(ExplodeEffect, CustomRootComponent);
 	GetWorldTimerManager().SetTimer(TrapDestroyTimer, this, &AEM_MazeTrap::DestroyTrap, DestroyTime, true);

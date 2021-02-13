@@ -71,11 +71,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Impulse")
 	float ForceOfImpulse;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate", meta = (ClampMin = 0.0f, UIMin = 0.0))
+	float MaxUltimateXP;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+	float CurrentUltimateXP;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsDoingMelee;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 	bool bCanUseProjectile;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+	bool bCanUseUltimate;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
+	bool bIsUsingUltimate;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Melee")
 	FName MeleeSocketName;
@@ -148,6 +160,10 @@ protected:
 
 	void MakeDamagePerSecond();
 
+	void StartUltimate();
+
+	void StopUltimate();
+
 	UFUNCTION()
 	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -182,4 +198,15 @@ public:
 	void ResetCombo();
 
 	bool HasToDestroy() { return bHasToDestroy; };
+
+	UFUNCTION(BlueprintCallable)
+	void GainUltimateXP(float XPGained);
+
+protected:
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BP_GainUltimateXP(float XPGained);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BP_StartUltimate();
 };

@@ -32,6 +32,7 @@ AEM_Character::AEM_Character()
 	CurrentNumComboMultiplier = 1.0f;
 	FakeWallDestroyDelay = 3.0f;
 	ForceOfImpulse = 2000000.0f;
+	MaxUltimateXP = 100.0f;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -120,6 +121,9 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("Melee", IE_Pressed, this, &AEM_Character::StartMelee);
 	PlayerInputComponent->BindAction("Melee", IE_Released, this, &AEM_Character::StopMelee);
+
+	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AEM_Character::StartUltimate);
+	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AEM_Character::StopUltimate);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -341,6 +345,18 @@ void AEM_Character::MakeDamagePerSecond()
 	AActor::TakeDamage(10.0f, FDamageEvent(), GetInstigatorController(), nullptr);
 }
 
+void AEM_Character::StartUltimate()
+{
+	if (bCanUseUltimate && !bIsUsingUltimate) {
+		BP_StartUltimate();
+		bIsUsingUltimate = true;
+	}
+}
+
+void AEM_Character::StopUltimate()
+{
+}
+
 void AEM_Character::SetComboEnabled(bool NewState)
 {
 	bIsComboEnabled = NewState;
@@ -350,4 +366,21 @@ void AEM_Character::ResetCombo()
 {
 	SetComboEnabled(false);
 	CurrentNumComboMultiplier = 1.0f;
+}
+
+void AEM_Character::GainUltimateXP(float XPGained)
+{
+	if (bCanUseUltimate || bIsUsingUltimate)
+	{
+		return;
+	}
+
+	CurrentUltimateXP = FMath::Clamp(CurrentUltimateXP + XPGained, 0.0f, MaxUltimateXP);
+
+	if (CurrentUltimateXP == MaxUltimateXP)
+	{
+		bCanUseUltimate = true;
+	}
+
+	BP_GainUltimateXP(XPGained);
 }

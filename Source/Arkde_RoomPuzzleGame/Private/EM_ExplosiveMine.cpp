@@ -45,7 +45,7 @@ void AEM_ExplosiveMine::OnHealthChange(UEM_HealthComponent* MyHealthComponent, A
 {
 	if (HealthComponent->IsDead())
 	{
-		Explode(MineDestroyTime);
+		SetExplosionEffect(MineDestroyTime);
 	}
 }
 
@@ -70,7 +70,7 @@ void AEM_ExplosiveMine::ExplodeMine(UPrimitiveComponent* OverlappedComponent, AA
 
 		if (IsValid(OverlappedCharacter))
 		{
-			Explode(MineDestroyTime);
+			SetExplosionEffect(MineDestroyTime);
 			DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 200.0f, 32, FColor::Red, false, 2.0f);
 			UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplodeDamage, GetActorLocation(), 200.0f, nullptr, TArray<AActor*>(), this, GetInstigatorController(), true, ECC_Visibility);
 		}

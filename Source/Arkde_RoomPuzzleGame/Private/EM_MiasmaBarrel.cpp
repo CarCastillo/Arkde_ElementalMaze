@@ -44,7 +44,7 @@ void AEM_MiasmaBarrel::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AA
 {
 	if (HealthComponent->IsDead())
 	{
-		Explode(BarrelDestroyTime);
+		SetExplosionEffect(BarrelDestroyTime);
 		MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	}
 }

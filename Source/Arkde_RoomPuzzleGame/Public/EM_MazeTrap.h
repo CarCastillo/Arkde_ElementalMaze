@@ -39,7 +39,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Explode(float DestroyTime);
+	void SetExplosionEffect(float DestroyTime);
 
 	void DestroyTrap();
 };
