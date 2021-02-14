@@ -15,6 +15,8 @@ class UAnimMontage;
 class UAnimInstance;
 class UEM_HealthComponent;
 class AEM_GameMode;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
@@ -36,6 +38,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UEM_HealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UParticleSystemComponent* EffectStatusParticleSystemComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
@@ -103,6 +108,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* MeleeMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
+	UParticleSystem* PoisonEffect;
 
 	UAnimInstance* MyAnimInstance;
 

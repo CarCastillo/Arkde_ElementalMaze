@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EM_HealthComponent.h"
 #include "EM_GameMode.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -53,6 +54,10 @@ AEM_Character::AEM_Character()
 	MeleeDetectorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
+
+	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BeamComp"));
+	EffectStatusParticleSystemComponent->SetupAttachment(RootComponent);
+	EffectStatusParticleSystemComponent->bAutoActivate = false;
 }
 
 FVector AEM_Character::GetPawnViewLocation() const
@@ -327,15 +332,16 @@ void AEM_Character::SetMeleeState(bool NewState)
 void AEM_Character::SetPoisonStatusEffect()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Character has been poisoned!");
+	EffectStatusParticleSystemComponent = UGameplayStatics::SpawnEmitterAttached(PoisonEffect, RootComponent);
 	GetWorldTimerManager().SetTimer(StatusEffectTimer, this, &AEM_Character::RemovePoisonStatusEffect, 5.0f, true);
 	GetWorldTimerManager().SetTimer(StatusEffectDPSTimer, this, &AEM_Character::MakeDamagePerSecond, 1.0f, true);
-	
 }
 
 void AEM_Character::RemovePoisonStatusEffect()
 {
 	GetWorldTimerManager().ClearTimer(StatusEffectTimer);
 	GetWorldTimerManager().ClearTimer(StatusEffectDPSTimer);
+	EffectStatusParticleSystemComponent->Deactivate();
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, "Character is not poisoned anymore!");
 }
 
