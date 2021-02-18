@@ -82,11 +82,20 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
 	float CurrentUltimateXP;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Time", meta = (ClampMin = 0.0f, UIMin = 0.0))
+	float MaxUltimateDuration;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Time")
+	float CurrentUltimateDuration;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsDoingMelee;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
 	bool bCanUseProjectile;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ultimate")
+	bool bUltimateWithTick;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ultimate")
 	bool bCanUseUltimate;
@@ -210,6 +219,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GainUltimateXP(float XPGained);
 
+	void UpdateUltimateDuration(float Value);
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
@@ -217,4 +228,10 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void BP_StartUltimate();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BP_UpdateUltimateDuration(float Value);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void BP_StopUltimate();
 };

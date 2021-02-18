@@ -34,6 +34,8 @@ AEM_Character::AEM_Character()
 	FakeWallDestroyDelay = 3.0f;
 	ForceOfImpulse = 2000000.0f;
 	MaxUltimateXP = 100.0f;
+	MaxUltimateDuration = 10.0f;
+	bUltimateWithTick = true;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -101,6 +103,11 @@ void AEM_Character::InitializeReferences()
 void AEM_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bUltimateWithTick && bIsUsingUltimate)
+	{
+		UpdateUltimateDuration(DeltaTime);
+	}
 }
 
 // Called to bind functionality to input
@@ -353,9 +360,13 @@ void AEM_Character::MakeDamagePerSecond()
 
 void AEM_Character::StartUltimate()
 {
-	if (bCanUseUltimate && !bIsUsingUltimate) {
-		BP_StartUltimate();
+	if (bCanUseUltimate && !bIsUsingUltimate) 
+	{
+		CurrentUltimateDuration = MaxUltimateDuration;
+
+		bCanUseUltimate = false;
 		bIsUsingUltimate = true;
+		BP_StartUltimate();
 	}
 }
 
@@ -389,4 +400,16 @@ void AEM_Character::GainUltimateXP(float XPGained)
 	}
 
 	BP_GainUltimateXP(XPGained);
+}
+
+void AEM_Character::UpdateUltimateDuration(float Value)
+{
+	CurrentUltimateDuration = FMath::Clamp(CurrentUltimateDuration - Value, 0.0f, MaxUltimateDuration);
+	BP_UpdateUltimateDuration(Value);
+
+	if (CurrentUltimateDuration == 0.0f)
+	{
+		bIsUsingUltimate = false;
+		BP_StopUltimate();
+	}
 }
