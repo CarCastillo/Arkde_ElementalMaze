@@ -88,6 +88,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Time")
 	float CurrentUltimateDuration;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Time")
+	float UltimateFrequency;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsDoingMelee;
 
@@ -130,6 +133,8 @@ protected:
 	FTimerHandle StatusEffectTimer;
 
 	FTimerHandle StatusEffectDPSTimer;
+
+	FTimerHandle UltimateTimer;
 
 	AEM_GameMode* GameModeReference;
 
@@ -220,6 +225,8 @@ public:
 	void GainUltimateXP(float XPGained);
 
 	void UpdateUltimateDuration(float Value);
+
+	void UpdateUltimateDurationWithTimer();
 
 protected:
 

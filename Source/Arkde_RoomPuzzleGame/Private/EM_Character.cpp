@@ -36,6 +36,7 @@ AEM_Character::AEM_Character()
 	MaxUltimateXP = 100.0f;
 	MaxUltimateDuration = 10.0f;
 	bUltimateWithTick = true;
+	UltimateFrequency = 0.5f;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -366,6 +367,12 @@ void AEM_Character::StartUltimate()
 
 		bCanUseUltimate = false;
 		bIsUsingUltimate = true;
+
+		if (!bUltimateWithTick)
+		{
+			GetWorldTimerManager().SetTimer(UltimateTimer, this, &AEM_Character::UpdateUltimateDurationWithTimer, UltimateFrequency, true);
+		}
+
 		BP_StartUltimate();
 	}
 }
@@ -410,6 +417,17 @@ void AEM_Character::UpdateUltimateDuration(float Value)
 	if (CurrentUltimateDuration == 0.0f)
 	{
 		bIsUsingUltimate = false;
+
+		if (!bUltimateWithTick)
+		{
+			GetWorldTimerManager().ClearTimer(UltimateTimer);
+		}
+
 		BP_StopUltimate();
 	}
+}
+
+void AEM_Character::UpdateUltimateDurationWithTimer()
+{
+	UpdateUltimateDuration(UltimateFrequency);
 }
