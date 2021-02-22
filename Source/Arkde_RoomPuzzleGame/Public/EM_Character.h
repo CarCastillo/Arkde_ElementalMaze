@@ -121,6 +121,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* MeleeMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* UltimateMontage;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
 	UParticleSystem* PoisonEffect;
 
@@ -135,6 +138,8 @@ protected:
 	FTimerHandle StatusEffectDPSTimer;
 
 	FTimerHandle UltimateTimer;
+
+	FTimerHandle BeginUltimateBehaviorTimer;
 
 	AEM_GameMode* GameModeReference;
 
@@ -227,6 +232,8 @@ public:
 	void UpdateUltimateDuration(float Value);
 
 	void UpdateUltimateDurationWithTimer();
+
+	void BeginUltimateBehavior();
 
 protected:
 

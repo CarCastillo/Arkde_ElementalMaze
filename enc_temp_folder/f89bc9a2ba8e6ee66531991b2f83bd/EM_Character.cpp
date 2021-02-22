@@ -368,7 +368,6 @@ void AEM_Character::StartUltimate()
 
 		if (IsValid(MyAnimInstance) && IsValid(UltimateMontage))
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 			const float StartUltimateMontageDuration = MyAnimInstance->Montage_Play(UltimateMontage);
 			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration, false);
 		}
@@ -438,8 +437,6 @@ void AEM_Character::UpdateUltimateDurationWithTimer()
 void AEM_Character::BeginUltimateBehavior()
 {
 	bIsUsingUltimate = true;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-
 	if (!bUltimateWithTick)
 	{
 		GetWorldTimerManager().SetTimer(UltimateTimer, this, &AEM_Character::UpdateUltimateDurationWithTimer, UltimateFrequency, true);
