@@ -17,6 +17,7 @@ class UEM_HealthComponent;
 class AEM_GameMode;
 class UParticleSystem;
 class UParticleSystemComponent;
+class AEM_Dummy;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
@@ -127,6 +128,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
 	UParticleSystem* PoisonEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
+	UParticleSystem* UltimateEffect;
+
 	UAnimInstance* MyAnimInstance;
 
 	FTimerDelegate FakeWallTimerDel;
@@ -142,6 +146,8 @@ protected:
 	FTimerHandle BeginUltimateBehaviorTimer;
 
 	AEM_GameMode* GameModeReference;
+
+	AEM_Dummy* DummyActor;
 
 public:
 	// Sets default values for this character's properties

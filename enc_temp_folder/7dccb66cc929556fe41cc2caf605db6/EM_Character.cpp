@@ -17,6 +17,8 @@
 #include "EM_HealthComponent.h"
 #include "EM_GameMode.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "DrawDebugHelpers.h"
+#include "EM_Dummy.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -368,6 +370,7 @@ void AEM_Character::StartUltimate()
 
 		if (IsValid(MyAnimInstance) && IsValid(UltimateMontage))
 		{
+			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 			const float StartUltimateMontageDuration = MyAnimInstance->Montage_Play(UltimateMontage);
 			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration, false);
 		}
@@ -419,6 +422,7 @@ void AEM_Character::UpdateUltimateDuration(float Value)
 	if (CurrentUltimateDuration == 0.0f)
 	{
 		bIsUsingUltimate = false;
+		DummyActor->bIsDummyOnMovement = true;
 
 		if (!bUltimateWithTick)
 		{
@@ -437,6 +441,37 @@ void AEM_Character::UpdateUltimateDurationWithTimer()
 void AEM_Character::BeginUltimateBehavior()
 {
 	bIsUsingUltimate = true;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	UGameplayStatics::SpawnEmitterAttached(UltimateEffect, RootComponent);
+	
+	TArray<FHitResult> OutHits;
+	FVector SweepStart = GetActorLocation();
+	FVector SweepEnd = GetActorLocation();
+	FCollisionShape ColliderSphere = FCollisionShape::MakeSphere(500.0f);
+	DrawDebugSphere(GetWorld(), GetActorLocation(), ColliderSphere.GetSphereRadius(), 50, FColor::Purple, false, MaxUltimateDuration);
+	bool isHit = GetWorld()->SweepMultiByChannel(OutHits, SweepStart, SweepEnd, FQuat::Identity, ECC_WorldStatic, ColliderSphere);
+
+	// TODO: Remove this temporal validation for enemy collision
+	FString DummyEnemyLabelString = "BP_EnemyDummy";
+	const TCHAR* DummyEnemyLabel = *DummyEnemyLabelString;
+
+	if (isHit)
+	{
+		for (auto& Hit : OutHits)
+		{
+			if (Hit.Actor->GetActorLabel() == DummyEnemyLabel)
+			{
+				DummyActor = Cast<AEM_Dummy>(Hit.GetActor());
+				if (IsValid(DummyActor))
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "DUMMY IS VALID");
+					DummyActor->bIsDummyOnMovement = false;
+					DummyActor->AttackerCharacter = this;
+				}
+			}
+		}
+	}
+
 	if (!bUltimateWithTick)
 	{
 		GetWorldTimerManager().SetTimer(UltimateTimer, this, &AEM_Character::UpdateUltimateDurationWithTimer, UltimateFrequency, true);

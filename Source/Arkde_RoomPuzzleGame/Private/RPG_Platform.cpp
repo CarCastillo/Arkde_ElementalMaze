@@ -18,7 +18,7 @@ ARPG_Platform::ARPG_Platform()
 	PlatformMeshComponent->SetupAttachment(CustomRootComponent);
 
 	bIsGoingUp = true;
-	speed = 10;
+	speed = 1.0f;
 	minHeight = 0.0f;
 	maxHeight = 50.0f;
 }
