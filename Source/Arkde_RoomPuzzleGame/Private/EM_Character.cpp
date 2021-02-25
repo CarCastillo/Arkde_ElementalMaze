@@ -60,7 +60,7 @@ AEM_Character::AEM_Character()
 
 	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
 
-	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BeamComp"));
+	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EffectStatusParticleSystemComponent"));
 	EffectStatusParticleSystemComponent->SetupAttachment(RootComponent);
 	EffectStatusParticleSystemComponent->bAutoActivate = false;
 }
@@ -452,19 +452,18 @@ void AEM_Character::BeginUltimateBehavior()
 	bool isHit = GetWorld()->SweepMultiByChannel(OutHits, SweepStart, SweepEnd, FQuat::Identity, ECC_WorldStatic, ColliderSphere);
 
 	// TODO: Remove this temporal validation for enemy collision
-	FString DummyEnemyLabelString = "BP_EnemyDummy";
+	FString DummyEnemyLabelString = "BP_EnemyDummy_C";
 	const TCHAR* DummyEnemyLabel = *DummyEnemyLabelString;
 
 	if (isHit)
 	{
 		for (auto& Hit : OutHits)
 		{
-			if (Hit.Actor->GetActorLabel() == DummyEnemyLabel)
+			if (Hit.Actor->GetClass()->GetName() == DummyEnemyLabel)
 			{
 				DummyActor = Cast<AEM_Dummy>(Hit.GetActor());
 				if (IsValid(DummyActor))
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "DUMMY IS VALID");
 					DummyActor->bIsDummyOnMovement = false;
 				}
 			}

@@ -5,6 +5,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AEM_Dummy::AEM_Dummy()
@@ -21,6 +23,10 @@ AEM_Dummy::AEM_Dummy()
 
 	CapsuleColliderComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleColliderComponent"));
 	CapsuleColliderComponent->SetupAttachment(CustomRootComponent);
+
+	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EffectStatusParticleSystemComponent"));
+	EffectStatusParticleSystemComponent->SetupAttachment(RootComponent);
+	EffectStatusParticleSystemComponent->bAutoActivate = false;
 
 	bIsGoingRight = true;
 	dummySpeed = 1.0f;
@@ -65,6 +71,14 @@ void AEM_Dummy::Tick(float DeltaTime)
 	if (bIsDummyOnMovement)
 	{
 		Move();
-	}	
+
+		// TODO: Not working fine, validate behaviour
+		//EffectStatusParticleSystemComponent->Deactivate();
+	}
+	// TODO: Not working fine, validate behaviour
+	/*else
+	{
+		EffectStatusParticleSystemComponent = UGameplayStatics::SpawnEmitterAttached(StunEffect, RootComponent);
+	}*/
 }
 

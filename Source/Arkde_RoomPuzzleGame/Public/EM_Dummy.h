@@ -8,6 +8,7 @@
 
 class USkeletalMeshComponent;
 class UCapsuleComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Dummy : public AActor
@@ -21,8 +22,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "My Components")
 	USkeletalMeshComponent* DummyMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "My Components")
 	UCapsuleComponent* CapsuleColliderComponent;
+
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "My Components")
+	UParticleSystemComponent* EffectStatusParticleSystemComponent;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
@@ -36,6 +42,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float rightMovementDistance;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
+	UParticleSystem* StunEffect;
 
 public:
 	bool bIsDummyOnMovement;
