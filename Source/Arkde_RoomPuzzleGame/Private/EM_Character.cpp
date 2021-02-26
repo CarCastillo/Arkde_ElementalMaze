@@ -422,7 +422,8 @@ void AEM_Character::UpdateUltimateDuration(float Value)
 	if (CurrentUltimateDuration == 0.0f)
 	{
 		bIsUsingUltimate = false;
-		DummyActor->bIsDummyOnMovement = true;
+
+		StopStunEffect();
 
 		if (!bUltimateWithTick)
 		{
@@ -444,6 +445,16 @@ void AEM_Character::BeginUltimateBehavior()
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	UGameplayStatics::SpawnEmitterAttached(UltimateEffect, RootComponent);
 	
+	StartStunEffect();
+
+	if (!bUltimateWithTick)
+	{
+		GetWorldTimerManager().SetTimer(UltimateTimer, this, &AEM_Character::UpdateUltimateDurationWithTimer, UltimateFrequency, true);
+	}
+}
+
+void AEM_Character::StartStunEffect()
+{
 	TArray<FHitResult> OutHits;
 	FVector SweepStart = GetActorLocation();
 	FVector SweepEnd = GetActorLocation();
@@ -469,9 +480,22 @@ void AEM_Character::BeginUltimateBehavior()
 			}
 		}
 	}
+}
 
-	if (!bUltimateWithTick)
+void AEM_Character::StopStunEffect()
+{
+	TArray<AActor*> DummiesList;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEM_Dummy::StaticClass(), DummiesList);
+
+	for (auto& Dummy : DummiesList)
 	{
-		GetWorldTimerManager().SetTimer(UltimateTimer, this, &AEM_Character::UpdateUltimateDurationWithTimer, UltimateFrequency, true);
+		if (IsValid(Dummy))
+		{
+			DummyActor = Cast<AEM_Dummy>(Dummy);
+			if (IsValid(DummyActor))
+			{
+				DummyActor->bIsDummyOnMovement = true;
+			}
+		}
 	}
 }

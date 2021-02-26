@@ -241,6 +241,10 @@ public:
 
 	void BeginUltimateBehavior();
 
+	void StartStunEffect();
+
+	void StopStunEffect();
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
