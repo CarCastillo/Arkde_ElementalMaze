@@ -92,6 +92,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Time")
 	float UltimateFrequency;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ultimate|Time", meta = (ClampMin = 0.0f, UIMin = 0.0))
+	float UltimatePlayRate;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ultimate|Time")
+	float PlayRate;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsDoingMelee;
 
@@ -148,6 +154,8 @@ protected:
 	AEM_GameMode* GameModeReference;
 
 	AEM_Dummy* DummyActor;
+
+	TArray<AActor*> DummiesList;
 
 public:
 	// Sets default values for this character's properties

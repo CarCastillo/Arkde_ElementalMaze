@@ -39,6 +39,8 @@ AEM_Character::AEM_Character()
 	MaxUltimateDuration = 10.0f;
 	bUltimateWithTick = true;
 	UltimateFrequency = 0.5f;
+	UltimatePlayRate = 3.0f;
+	PlayRate = 1.0f;
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -367,12 +369,13 @@ void AEM_Character::StartUltimate()
 	{
 		CurrentUltimateDuration = MaxUltimateDuration;
 		bCanUseUltimate = false;
+		PlayRate = UltimatePlayRate;
 
 		if (IsValid(MyAnimInstance) && IsValid(UltimateMontage))
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-			const float StartUltimateMontageDuration = MyAnimInstance->Montage_Play(UltimateMontage);
-			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration, false);
+			const float StartUltimateMontageDuration = MyAnimInstance->Montage_Play(UltimateMontage, PlayRate);
+			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration / 3, false);
 		}
 		else {
 			BeginUltimateBehavior();
@@ -422,6 +425,7 @@ void AEM_Character::UpdateUltimateDuration(float Value)
 	if (CurrentUltimateDuration == 0.0f)
 	{
 		bIsUsingUltimate = false;
+		PlayRate = 1.0f;
 
 		StopStunEffect();
 
@@ -473,6 +477,7 @@ void AEM_Character::StartStunEffect()
 			if (Hit.Actor->GetClass()->GetName() == DummyEnemyLabel)
 			{
 				DummyActor = Cast<AEM_Dummy>(Hit.GetActor());
+				DummiesList.Push(DummyActor);
 				if (IsValid(DummyActor))
 				{
 					DummyActor->bIsDummyOnMovement = false;
@@ -484,9 +489,6 @@ void AEM_Character::StartStunEffect()
 
 void AEM_Character::StopStunEffect()
 {
-	TArray<AActor*> DummiesList;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEM_Dummy::StaticClass(), DummiesList);
-
 	for (auto& Dummy : DummiesList)
 	{
 		if (IsValid(Dummy))
