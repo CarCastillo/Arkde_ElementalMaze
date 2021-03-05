@@ -298,7 +298,7 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 
 void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	if (HealthComponent->IsDead())
+	if (HealthComponent->IsDead() && GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 	{
 		if (IsValid(GameModeReference))
 		{

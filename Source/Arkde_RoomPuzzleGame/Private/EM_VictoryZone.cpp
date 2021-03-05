@@ -38,7 +38,7 @@ void AEM_VictoryZone::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		AEM_Character* EMCharacter = Cast<AEM_Character>(OtherActor);
 
-		if (IsValid(EMCharacter))
+		if (IsValid(EMCharacter) && EMCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 		{
 			GameModeReference->Victory(EMCharacter);
 		}

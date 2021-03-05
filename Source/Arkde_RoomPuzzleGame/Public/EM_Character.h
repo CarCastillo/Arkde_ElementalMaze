@@ -19,6 +19,13 @@ class UParticleSystem;
 class UParticleSystemComponent;
 class AEM_Dummy;
 
+UENUM(Blueprintable)
+enum class EEM_CharacterType : uint8
+{
+	CharacterType_Player	UMETA(DisplayName = "Player"),
+	CharacterType_Enemy		UMETA(DisplayName = "Enemy")
+};
+
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Character : public ACharacter
 {
@@ -121,6 +128,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<AEM_Weapon> InitialWeaponClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EEM_CharacterType CharacterType;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	AEM_Weapon* CurrentWeapon;
@@ -252,6 +262,9 @@ public:
 	void StartStunEffect();
 
 	void StopStunEffect();
+
+	UFUNCTION(BlueprintCallable)
+	EEM_CharacterType GetCharacterType() { return CharacterType; };
 
 protected:
 

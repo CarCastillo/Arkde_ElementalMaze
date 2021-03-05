@@ -37,7 +37,7 @@ void AEM_Item::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		AEM_Character* OverlappedCharacter = Cast<AEM_Character>(OtherActor);
 
-		if (IsValid(OverlappedCharacter))
+		if (IsValid(OverlappedCharacter) && OverlappedCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 		{
 			Pickup(OverlappedCharacter);
 		}
