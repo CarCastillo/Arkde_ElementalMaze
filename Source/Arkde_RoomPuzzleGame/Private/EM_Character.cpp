@@ -278,6 +278,27 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 {
 	if (IsValid(OtherActor))
 	{
+		if (OtherActor == this)
+		{
+			return;
+		}
+
+		AEM_Character* MeleeTarget = Cast<AEM_Character>(OtherActor);
+		if (IsValid(MeleeTarget))
+		{
+			bool bPlayerAttackingEnemy = GetCharacterType() == EEM_CharacterType::CharacterType_Player && MeleeTarget->GetCharacterType() == EEM_CharacterType::CharacterType_Enemy;
+			bool bEnemyAttackingPlayer = GetCharacterType() == EEM_CharacterType::CharacterType_Enemy && MeleeTarget->GetCharacterType() == EEM_CharacterType::CharacterType_Player;
+
+			if (bPlayerAttackingEnemy || bEnemyAttackingPlayer)
+			{
+				UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
+			}
+		}
+		else
+		{
+			UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);
+		}
+
 		UStaticMeshComponent* OtherActorMeshComp = nullptr;
 		OtherActorMeshComp = Cast<UStaticMeshComponent>(OtherActor->GetRootComponent());
 
@@ -291,8 +312,6 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 				GetWorldTimerManager().SetTimer(FakeWallDestroyTimer, FakeWallTimerDel, FakeWallDestroyDelay, true);
 			}
 		}
-
-		UGameplayStatics::ApplyPointDamage(OtherActor, MeleeDamage * CurrentNumComboMultiplier, SweepResult.Location, SweepResult, GetInstigatorController(), this, nullptr);	
 	}
 }
 
