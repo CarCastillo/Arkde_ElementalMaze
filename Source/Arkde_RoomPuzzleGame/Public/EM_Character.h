@@ -197,8 +197,10 @@ protected:
 
 	void CreateInitialWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void StartWeaponAction();
 
+	UFUNCTION(BlueprintCallable)
 	void StopWeaponAction();
 
 	UFUNCTION(BlueprintCallable)
