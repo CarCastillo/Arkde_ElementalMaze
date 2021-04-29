@@ -10,6 +10,8 @@ class UStaticMeshComponent;
 class UParticleSystemComponent;
 class UParticleSystem;
 class AEM_Character;
+class UEM_HealthComponent;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Specter : public APawn
@@ -23,6 +25,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UParticleSystemComponent* SpecterParticleSystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UEM_HealthComponent* HealthComponent;
 
 public:
 	// Sets default values for this pawn's properties
@@ -45,12 +50,17 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 	AEM_Character* PlayerCharacter;
 
+	UMaterialInstanceDynamic* BotMaterial;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Navigation")
 	FVector GetNextPathPoint();
+
+	UFUNCTION()
+	void TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 public:	
 	// Called every frame

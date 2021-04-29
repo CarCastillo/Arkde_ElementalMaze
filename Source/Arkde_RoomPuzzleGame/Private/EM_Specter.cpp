@@ -9,6 +9,8 @@
 #include "NavigationSystem/Public/NavigationSystem.h"
 #include "NavigationSystem/Public/NavigationPath.h"
 #include "DrawDebugHelpers.h"
+#include "EM_HealthComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AEM_Specter::AEM_Specter()
@@ -24,6 +26,8 @@ AEM_Specter::AEM_Specter()
 	SpecterParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SpecterParticleSystemComponent"));
 	SpecterParticleSystemComponent->SetupAttachment(RootComponent);
 
+	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
+
 	MinDistanceToTarget = 100.0f;
 	ForceMagnitude = 500.0f;
 }
@@ -38,6 +42,10 @@ void AEM_Specter::BeginPlay()
 	{
 		PlayerCharacter = Cast<AEM_Character>(PlayerPawn);
 	}
+
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Specter::TakingDamage);
+
+	BotMaterial = SpecterMeshComponent->CreateAndSetMaterialInstanceDynamicFromMaterial(0, SpecterMeshComponent->GetMaterial(0));
 
 	NextPathPoint = GetNextPathPoint();
 
@@ -61,6 +69,19 @@ FVector AEM_Specter::GetNextPathPoint()
 	return GetActorLocation();
 }
 
+void AEM_Specter::TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (IsValid(BotMaterial))
+	{
+		BotMaterial->SetScalarParameterValue("Pulse", GetWorld()->TimeSeconds);
+	}
+
+	if (CurrentHealthComponent->IsDead())
+	{
+		Destroy();
+	}
+}
+
 // Called every frame
 void AEM_Specter::Tick(float DeltaTime)
 {
@@ -74,7 +95,6 @@ void AEM_Specter::Tick(float DeltaTime)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Ready to apply force!"));
 		FVector ForceDirection = NextPathPoint - GetActorLocation();
 		ForceDirection.Normalize();
 		ForceDirection *= ForceMagnitude;
