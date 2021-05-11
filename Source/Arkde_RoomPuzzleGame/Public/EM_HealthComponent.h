@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsDead() const { return bIsDead; };
 
+	UFUNCTION(BlueprintCallable)
+	bool IsDamaged();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

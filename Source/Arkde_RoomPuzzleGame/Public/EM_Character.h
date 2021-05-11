@@ -175,6 +175,8 @@ public:
 
 	AEM_LaunchPad* CurrentLaunchPad;
 
+	bool bIsDamaged;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

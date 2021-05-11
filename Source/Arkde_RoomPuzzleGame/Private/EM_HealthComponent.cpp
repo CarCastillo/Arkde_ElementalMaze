@@ -14,6 +14,16 @@ UEM_HealthComponent::UEM_HealthComponent()
 }
 
 
+bool UEM_HealthComponent::IsDamaged()
+{
+	if (Health < 100.0f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 // Called when the game starts
 void UEM_HealthComponent::BeginPlay()
 {
@@ -36,6 +46,8 @@ void UEM_HealthComponent::TakingDamage(AActor* DamagedActor, float Damage, const
 	{
 		return;
 	}
+
+	IsDamaged();
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
 
