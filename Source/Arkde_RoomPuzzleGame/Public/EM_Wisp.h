@@ -11,6 +11,7 @@ class AEM_Character;
 class AEM_Enemy;
 class UEM_HealthComponent;
 class USphereComponent;
+class UParticleSystem;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Wisp : public APawn
@@ -43,8 +44,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bot Movement")
 	float ForceMagnitude;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Healing")
+	float HealingPoints;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Debug")
+	bool bDebug;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+	AEM_Enemy* EnemyPawn;
+
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 	AEM_Enemy* DamagedEnemy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Particles")
+	UParticleSystem* HealingEffect;
 
 	TArray<AEM_Enemy*> DamagedEnemiesList;
 

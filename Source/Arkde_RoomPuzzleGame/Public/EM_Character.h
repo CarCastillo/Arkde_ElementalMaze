@@ -271,6 +271,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	EEM_CharacterType GetCharacterType() { return CharacterType; };
 
+	void HealCharacter(float HealingPoints);
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

@@ -529,3 +529,8 @@ void AEM_Character::StopStunEffect()
 		}
 	}
 }
+
+void AEM_Character::HealCharacter(float HealingPoints)
+{
+	HealthComponent->RecoverHealth(HealingPoints);
+}

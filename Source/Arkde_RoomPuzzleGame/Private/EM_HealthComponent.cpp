@@ -13,15 +13,29 @@ UEM_HealthComponent::UEM_HealthComponent()
 	MaxHealth = 100.0f;
 }
 
-
 bool UEM_HealthComponent::IsDamaged()
 {
-	if (Health < 100.0f)
+	if (Health < MaxHealth)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+void UEM_HealthComponent::RecoverHealth(float HealthPoints)
+{
+	Health += HealthPoints;
+
+	if (Health > MaxHealth)
+	{
+		Health = MaxHealth;
+	}
+
+	if (bDebug)
+	{
+		UE_LOG(LogTemp, Log, TEXT("My Health is: %s"), *FString::SanitizeFloat(Health));
+	}
 }
 
 // Called when the game starts

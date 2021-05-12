@@ -34,7 +34,7 @@ AEM_Wisp::AEM_Wisp()
 
 	MinDistanceToTarget = 100.0f;
 	ForceMagnitude = 500.0f;
-
+	HealingPoints = 30.0f;
 }
 
 // Called when the game starts or when spawned
@@ -71,13 +71,12 @@ bool AEM_Wisp::IsEnemyDamaged()
 		{
 			if (IsValid(Enemy))
 			{
-				DamagedEnemy = Cast<AEM_Enemy>(Enemy);
-				if (IsValid(DamagedEnemy))
+				EnemyPawn = Cast<AEM_Enemy>(Enemy);
+				if (IsValid(EnemyPawn))
 				{
-					if (DamagedEnemy->bIsDamaged)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "ENEMY DAMAGED!");
-						DamagedEnemiesList.Push(DamagedEnemy);
+					if (EnemyPawn->bIsDamaged)
+					{	
+						DamagedEnemiesList.Push(EnemyPawn);
 					}
 				}
 			}
@@ -89,11 +88,30 @@ bool AEM_Wisp::IsEnemyDamaged()
 
 void AEM_Wisp::VerifyEnemyHealth()
 {
-	IsEnemyDamaged();
+	if (DamagedEnemiesList.Num() > 0)
+	{
+		for (auto& FoundEnemy : DamagedEnemiesList)
+		{
+			if (IsValid(FoundEnemy))
+			{
+				if (!FoundEnemy->bIsDamaged)
+				{
+					DamagedEnemiesList.Empty();
+				}
+			}
+		}
+	}
 
 	if (IsEnemyDamaged())
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "ENEMIES DAMAGED!");
 		MoveToEnemyLocation();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, "ENEMIES HEALED!");
+		//NextPathPoint = GetNextPathPoint();
+		//DamagedEnemiesList.Empty();
 	}
 }
 
@@ -112,7 +130,21 @@ void AEM_Wisp::HealDamagedEnemy(UPrimitiveComponent* OverlappedComponent, AActor
 	if (DamagedEnemiesList.Num() > 0)
 	{
 		if (DamagedEnemiesList.Contains(OtherActor))
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, "Healing Time!");
+		{
+			DamagedEnemy = Cast<AEM_Enemy>(OtherActor);
+
+			if (IsValid(DamagedEnemy))
+			{
+				DamagedEnemy->HealCharacter(HealingPoints);
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HealingEffect, GetActorLocation());
+
+				if (bDebug)
+				{
+					DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 20, FColor::White, true, 2.0f, 0, 2.0f);
+					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, "Healing Time!");
+				}
+			}
+		}
 	}
 
 }

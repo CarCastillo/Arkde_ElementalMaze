@@ -45,6 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsDamaged();
 
+	UFUNCTION(BlueprintCallable)
+	void RecoverHealth(float HealthPoints);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
