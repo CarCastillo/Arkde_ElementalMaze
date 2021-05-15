@@ -92,6 +92,7 @@ void AEM_Character::BeginPlay()
 
 	MeleeDetectorComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_Character::MakeMeleeDamage);
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Character::OnHealthChange);
+	HealthComponent->OnHealthFullyRecoveredDelegate.AddDynamic(this, &AEM_Character::OnHealthFullyRecovered);
 }
 
 void AEM_Character::InitializeReferences()
@@ -332,6 +333,14 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 		{
 			GameModeReference->GameOver(this);
 		}
+	}
+}
+
+void AEM_Character::OnHealthFullyRecovered(UEM_HealthComponent* MyHealthComponent, bool bIsHealthFullyRecovered)
+{
+	if (bIsHealthFullyRecovered)
+	{
+		bIsDamaged = false;
 	}
 }
 

@@ -175,6 +175,7 @@ public:
 
 	AEM_LaunchPad* CurrentLaunchPad;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bIsDamaged;
 
 protected:
@@ -225,6 +226,9 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION()
+	void OnHealthFullyRecovered(UEM_HealthComponent* MyHealthComponent, bool bIsHealthFullyRecovered);
 
 public:	
 	// Called every frame

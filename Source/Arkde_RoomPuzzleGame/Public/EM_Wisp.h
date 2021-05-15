@@ -59,6 +59,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Particles")
 	UParticleSystem* HealingEffect;
 
+	UPROPERTY(BlueprintReadOnly)
 	TArray<AEM_Enemy*> DamagedEnemiesList;
 
 	FTimerHandle EnemyDamageDetectionTimer;
@@ -78,6 +79,9 @@ protected:
 
 	UFUNCTION()
 	void HealDamagedEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 public:	
 	// Called every frame

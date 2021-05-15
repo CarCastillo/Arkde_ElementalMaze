@@ -76,7 +76,7 @@ bool AEM_Wisp::IsEnemyDamaged()
 				{
 					if (EnemyPawn->bIsDamaged)
 					{	
-						DamagedEnemiesList.Push(EnemyPawn);
+						DamagedEnemiesList.AddUnique(EnemyPawn);
 					}
 				}
 			}
@@ -90,34 +90,44 @@ void AEM_Wisp::VerifyEnemyHealth()
 {
 	if (DamagedEnemiesList.Num() > 0)
 	{
-		for (auto& FoundEnemy : DamagedEnemiesList)
+		TArray<int> RecoveredEnemies;
+		for (int i = 0; i < DamagedEnemiesList.Num(); i++)
 		{
+			AEM_Enemy* FoundEnemy = DamagedEnemiesList[i];
 			if (IsValid(FoundEnemy))
 			{
 				if (!FoundEnemy->bIsDamaged)
 				{
-					DamagedEnemiesList.Empty();
+					RecoveredEnemies.Add(i);
 				}
+			}
+		}
+
+		for (int& EnemyIndex : RecoveredEnemies)
+		{
+			if (DamagedEnemiesList.IsValidIndex(EnemyIndex))
+			{
+				DamagedEnemiesList.RemoveAt(EnemyIndex);
 			}
 		}
 	}
 
 	if (IsEnemyDamaged())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "ENEMIES DAMAGED!");
 		MoveToEnemyLocation();
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, "ENEMIES HEALED!");
-		//NextPathPoint = GetNextPathPoint();
-		//DamagedEnemiesList.Empty();
 	}
 }
 
 void AEM_Wisp::MoveToEnemyLocation()
 {
-	NextPathPoint = DamagedEnemiesList[0]->GetActorLocation();
+	if (DamagedEnemiesList.IsValidIndex(0))
+	{
+		NextPathPoint = DamagedEnemiesList[0]->GetActorLocation();
+	}
+	else
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
 }
 
 void AEM_Wisp::HealDamagedEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -147,6 +157,14 @@ void AEM_Wisp::HealDamagedEnemy(UPrimitiveComponent* OverlappedComponent, AActor
 		}
 	}
 
+}
+
+void AEM_Wisp::TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (CurrentHealthComponent->IsDead())
+	{
+		Destroy();
+	}
 }
 
 // Called every frame

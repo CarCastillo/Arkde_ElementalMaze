@@ -15,12 +15,7 @@ UEM_HealthComponent::UEM_HealthComponent()
 
 bool UEM_HealthComponent::IsDamaged()
 {
-	if (Health < MaxHealth)
-	{
-		return true;
-	}
-
-	return false;
+	return Health < MaxHealth;
 }
 
 void UEM_HealthComponent::RecoverHealth(float HealthPoints)
@@ -30,6 +25,7 @@ void UEM_HealthComponent::RecoverHealth(float HealthPoints)
 	if (Health > MaxHealth)
 	{
 		Health = MaxHealth;
+		OnHealthFullyRecoveredDelegate.Broadcast(this, true);
 	}
 
 	if (bDebug)
