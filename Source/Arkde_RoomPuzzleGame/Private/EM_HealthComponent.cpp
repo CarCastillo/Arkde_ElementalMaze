@@ -15,16 +15,19 @@ UEM_HealthComponent::UEM_HealthComponent()
 
 bool UEM_HealthComponent::IsDamaged()
 {
-	return Health < MaxHealth;
+	return Health < MaxHealth && Health > 0.0f;
 }
 
 void UEM_HealthComponent::RecoverHealth(float HealthPoints)
 {
-	Health += HealthPoints;
-
-	if (Health > MaxHealth)
+	if (bIsDead)
 	{
-		Health = MaxHealth;
+		return;
+	}
+
+	Health = FMath::Clamp(Health + HealthPoints, 0.0f, MaxHealth);
+	if (Health == MaxHealth)
+	{
 		OnHealthFullyRecoveredDelegate.Broadcast(this, true);
 	}
 
@@ -64,6 +67,7 @@ void UEM_HealthComponent::TakingDamage(AActor* DamagedActor, float Damage, const
 	if (Health == 0.0f)
 	{
 		bIsDead = true;
+		OnDeadDelegate.Broadcast(DamageCauser);
 	}
 
 	OnHealthChangeDelegate.Broadcast(this, DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);

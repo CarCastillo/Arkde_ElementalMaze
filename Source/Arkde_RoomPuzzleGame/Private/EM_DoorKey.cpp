@@ -20,6 +20,5 @@ void AEM_DoorKey::Pickup(AEM_Character* PickupCharacter)
 	Super::Pickup(PickupCharacter);
 
 	PickupCharacter->AddKey(KeyTag);
-	PickupCharacter->GainUltimateXP(XPValue);
 	Destroy();
 }

@@ -8,6 +8,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangeSignature, UEM_HealthComponent*, HealthComponent, AActor*, DamagedActor, float, Damage, const UDamageType*, DamageType, AController*, InstigatedBy, AActor*, DamageCauser);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthFullyRecoveredSignature, UEM_HealthComponent*, HealthComponent, bool, bIsHealthFullyRecovered);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeadSignature, AActor*, DamageCauser);
 
 UCLASS( ClassGroup=(ELEMAZE), meta=(BlueprintSpawnableComponent) )
 class ARKDE_ROOMPUZZLEGAME_API UEM_HealthComponent : public UActorComponent
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthFullyRecoveredSignature OnHealthFullyRecoveredDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDeadSignature OnDeadDelegate;
 
 public:	
 	// Sets default values for this component's properties
