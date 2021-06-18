@@ -7,6 +7,9 @@
 #include "EM_Weapon.h"
 #include "Components/CapsuleComponent.h"
 #include "EM_Item.h"
+#include "EM_MagicProjectile.h"
+#include "AIModule/Classes/Perception/AISense_Damage.h"
+#include "EM_AIController.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -21,6 +24,9 @@ void AEM_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MyAIController = Cast<AEM_AIController>(GetController());
+
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Enemy::HealthChange);
 	HealthComponent->OnDeadDelegate.AddDynamic(this, &AEM_Enemy::GiveXP);
 }
 
@@ -79,4 +85,27 @@ bool AEM_Enemy::TrySpawnLoot()
 	}
 
 	return true;
+}
+
+void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (!IsValid(MyAIController))
+	{
+		return;
+	}
+
+	if (CurrentHealthComponent->IsDead())
+	{
+		MyAIController->UnPossess();
+	}
+	else
+	{
+		AEM_MagicProjectile* MagicProjectile = Cast<AEM_MagicProjectile>(DamageCauser);
+		if (IsValid(MagicProjectile))
+		{
+			AActor* MagicProjectileOwner = MagicProjectile->GetOwner();
+			MyAIController->SetReceiveDamage(true);
+			UAISense_Damage::ReportDamageEvent(GetWorld(), this, MagicProjectileOwner, Damage, MagicProjectileOwner->GetActorLocation(), FVector::ZeroVector);
+		}
+	}
 }

@@ -9,6 +9,7 @@
 
 class AEM_PathActor;
 class AEM_Item;
+class AEM_AIController;
 
 /**
  * 
@@ -45,6 +46,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loot System")
 	TSubclassOf<AEM_Item> LootItemClass;
 
+	UPROPERTY(BlueprintReadOnly, Category = "AI|Controller")
+	AEM_AIController* MyAIController;
+
 protected:
 
 	// Called when the game starts or when spawned
@@ -60,4 +64,14 @@ protected:
 	void BP_GiveXP(AActor* DamageCauser);
 
 	bool TrySpawnLoot();
+
+	void HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
+public:
+
+	bool GetLoopPath() { return bLoopPath; };
+
+	int GetDirectionIndex() { return DirectionIndex; };
+
+	float GetWaitingTime() { return WaitingTimeOnPathPoint; };
 };

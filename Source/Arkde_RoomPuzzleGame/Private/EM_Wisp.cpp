@@ -151,7 +151,6 @@ void AEM_Wisp::HealDamagedEnemy(UPrimitiveComponent* OverlappedComponent, AActor
 				if (bDebug)
 				{
 					DrawDebugSphere(GetWorld(), GetActorLocation(), 100.0f, 20, FColor::White, true, 2.0f, 0, 2.0f);
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, "Healing Time!");
 				}
 			}
 		}
