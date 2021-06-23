@@ -55,7 +55,7 @@ void AEM_MiasmaBarrel::SpreadMiasma(UPrimitiveComponent* OverlappedComponent, AA
 	{
 		AEM_Character* OverlappedCharacter = Cast<AEM_Character>(OtherActor);
 
-		if (IsValid(OverlappedCharacter))
+		if (IsValid(OverlappedCharacter) && OverlappedCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 		{
 			OverlappedCharacter->SetPoisonStatusEffect();
 			DrawDebugSphere(GetWorld(), CustomRootComponent->GetComponentLocation(), 300.0f, 32, FColor::Red, false, 2.0f);
