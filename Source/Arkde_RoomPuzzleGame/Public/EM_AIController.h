@@ -60,6 +60,7 @@ public:
 	// Sets default values for this character's properties
 	AEM_AIController();
 
+	UFUNCTION()
 	void SetReceiveDamage(bool bNewState) { bReceivingDamage = bNewState; };
 
 protected:

@@ -65,6 +65,7 @@ protected:
 
 	bool TrySpawnLoot();
 
+	UFUNCTION()
 	void HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 public:
