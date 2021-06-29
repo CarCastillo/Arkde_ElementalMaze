@@ -513,6 +513,7 @@ void AEM_Character::StartStunEffect()
 			if (IsValid(ReachedCharacter) && ReachedCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Enemy)
 			{
 				ReachedEnemiesList.Push(ReachedCharacter);
+
 				ReachedCharacter->GetMesh()->bPauseAnims = true;
 				ReachedCharacter->GetCharacterMovement()->DisableMovement();
 				ReachedCharacter->StopWeaponAction();
