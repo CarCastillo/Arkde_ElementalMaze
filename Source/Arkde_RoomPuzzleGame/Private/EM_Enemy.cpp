@@ -16,7 +16,7 @@ AEM_Enemy::AEM_Enemy()
 	bLoopPath = false;
 	DirectionIndex = 1;
 	WaitingTimeOnPathPoint = 1.0f;
-	XPValue = 20.0f;
+	XPValue = 40.0f;
 	LootProbability = 100.0f;
 }
 

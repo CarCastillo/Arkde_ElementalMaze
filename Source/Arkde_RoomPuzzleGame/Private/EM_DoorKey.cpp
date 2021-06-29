@@ -11,7 +11,7 @@ AEM_DoorKey::AEM_DoorKey()
 	KeyMeshComponent->SetupAttachment(RootComponent);
 	KeyMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	XPValue = 40.0f;
+	XPValue = 100.0f;
 	KeyTag = "KeyA";
 }
 
@@ -20,5 +20,6 @@ void AEM_DoorKey::Pickup(AEM_Character* PickupCharacter)
 	Super::Pickup(PickupCharacter);
 
 	PickupCharacter->AddKey(KeyTag);
+	PickupCharacter->GainUltimateXP(XPValue);
 	Destroy();
 }

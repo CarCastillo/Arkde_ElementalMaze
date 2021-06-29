@@ -19,6 +19,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "DrawDebugHelpers.h"
 #include "EM_Dummy.h"
+#include "EM_Enemy.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -157,8 +158,8 @@ void AEM_Character::MoveRight(float value)
 void AEM_Character::Jump()
 {
 	Super::Jump();
-
 }
+
 void AEM_Character::StopJumping()
 {
 	Super::StopJumping();
@@ -412,7 +413,7 @@ void AEM_Character::StartUltimate()
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 			const float StartUltimateMontageDuration = MyAnimInstance->Montage_Play(UltimateMontage, PlayRate);
-			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration / 3, false);
+			GetWorldTimerManager().SetTimer(BeginUltimateBehaviorTimer, this, &AEM_Character::BeginUltimateBehavior, StartUltimateMontageDuration / PlayRate, false);
 		}
 		else {
 			BeginUltimateBehavior();
@@ -503,22 +504,18 @@ void AEM_Character::StartStunEffect()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), ColliderSphere.GetSphereRadius(), 50, FColor::Purple, false, MaxUltimateDuration);
 	bool isHit = GetWorld()->SweepMultiByChannel(OutHits, SweepStart, SweepEnd, FQuat::Identity, ECC_WorldStatic, ColliderSphere);
 
-	// TODO: Remove this temporal validation for enemy collision
-	FString DummyEnemyLabelString = "BP_EnemyDummy_C";
-	const TCHAR* DummyEnemyLabel = *DummyEnemyLabelString;
-
 	if (isHit)
 	{
 		for (auto& Hit : OutHits)
 		{
-			if (Hit.Actor->GetClass()->GetName() == DummyEnemyLabel)
+			ReachedCharacter = Cast<AEM_Character>(Hit.Actor);
+			
+			if (IsValid(ReachedCharacter) && ReachedCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Enemy)
 			{
-				DummyActor = Cast<AEM_Dummy>(Hit.GetActor());
-				DummiesList.Push(DummyActor);
-				if (IsValid(DummyActor))
-				{
-					DummyActor->bIsDummyOnMovement = false;
-				}
+				ReachedEnemiesList.Push(ReachedCharacter);
+				ReachedCharacter->GetMesh()->bPauseAnims = true;
+				ReachedCharacter->GetCharacterMovement()->DisableMovement();
+				ReachedCharacter->StopWeaponAction();
 			}
 		}
 	}
@@ -526,14 +523,16 @@ void AEM_Character::StartStunEffect()
 
 void AEM_Character::StopStunEffect()
 {
-	for (auto& Dummy : DummiesList)
+	for (auto& StunnedEnemy : ReachedEnemiesList)
 	{
-		if (IsValid(Dummy))
+		if (IsValid(StunnedEnemy))
 		{
-			DummyActor = Cast<AEM_Dummy>(Dummy);
-			if (IsValid(DummyActor))
+			ReachedCharacter = Cast<AEM_Enemy>(StunnedEnemy);
+			if (IsValid(ReachedCharacter))
 			{
-				DummyActor->bIsDummyOnMovement = true;
+				ReachedCharacter->GetMesh()->bPauseAnims = false;
+				ReachedCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+				ReachedCharacter->bCanUseProjectile = true;
 			}
 		}
 	}

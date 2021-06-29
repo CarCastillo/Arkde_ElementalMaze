@@ -18,6 +18,7 @@ class AEM_GameMode;
 class UParticleSystem;
 class UParticleSystemComponent;
 class AEM_Dummy;
+class AEM_Enemy;
 
 UENUM(Blueprintable)
 enum class EEM_CharacterType : uint8
@@ -163,9 +164,9 @@ protected:
 
 	AEM_GameMode* GameModeReference;
 
-	AEM_Dummy* DummyActor;
+	AEM_Character* ReachedCharacter;
 
-	TArray<AActor*> DummiesList;
+	TArray<AActor*> ReachedEnemiesList;
 
 public:
 	// Sets default values for this character's properties

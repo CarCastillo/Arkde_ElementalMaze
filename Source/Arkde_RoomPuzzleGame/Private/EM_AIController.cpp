@@ -73,7 +73,6 @@ void AEM_AIController::UpdateSenses(const TArray<AActor*>& UpdatedActors)
 					MyBlackboard->SetValueAsBool(InvestigatingParemeterName, bReceivingDamage);
 					if (bReceivingDamage)
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "Enemy has been damaged!");
 						MyBlackboard->SetValueAsVector(TargetLocationParemeterName, PerceptionInfo.LastSensedStimuli[i].StimulusLocation);
 					}
 					break;
