@@ -484,6 +484,7 @@ void AEM_Character::UpdateUltimateDurationWithTimer()
 void AEM_Character::BeginUltimateBehavior()
 {
 	bIsUsingUltimate = true;
+	CurrentUltimateXP = 0.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	UGameplayStatics::SpawnEmitterAttached(UltimateEffect, RootComponent);
 	
