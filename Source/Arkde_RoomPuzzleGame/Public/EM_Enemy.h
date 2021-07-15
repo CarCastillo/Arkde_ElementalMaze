@@ -10,6 +10,7 @@
 class AEM_PathActor;
 class AEM_Item;
 class AEM_AIController;
+class AEM_FlameCurse;
 
 /**
  * 
@@ -46,6 +47,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loot System")
 	TSubclassOf<AEM_Item> LootItemClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Curses")
+	TSubclassOf<AEM_FlameCurse> FlameCurseClass;
+
 	UPROPERTY(BlueprintReadOnly, Category = "AI|Controller")
 	AEM_AIController* MyAIController;
 
@@ -53,9 +57,6 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
 	void GiveXP(AActor* DamageCauser);
@@ -67,6 +68,9 @@ protected:
 
 	UFUNCTION()
 	void HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
+	UFUNCTION()
+	void CastFlames(FVector TargetLocation);
 
 public:
 

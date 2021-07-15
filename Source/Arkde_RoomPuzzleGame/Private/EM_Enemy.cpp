@@ -10,6 +10,7 @@
 #include "EM_MagicProjectile.h"
 #include "AIModule/Classes/Perception/AISense_Damage.h"
 #include "EM_AIController.h"
+#include "EM_FlameCurse.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -28,14 +29,6 @@ void AEM_Enemy::BeginPlay()
 
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Enemy::HealthChange);
 	HealthComponent->OnDeadDelegate.AddDynamic(this, &AEM_Enemy::GiveXP);
-}
-
-void AEM_Enemy::TakingDamage(UEM_HealthComponent* CurrentHealthComponent, AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
-{
-	if (HealthComponent->IsDead())
-	{
-		Destroy();
-	}
 }
 
 void AEM_Enemy::GiveXP(AActor* DamageCauser)
@@ -94,6 +87,14 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 		return;
 	}
 
+	if (CurrentHealthComponent->IsOnCriticalStatus())
+	{
+		FVector DamageCauserLocation = DamageCauser->GetActorLocation();
+
+		// cast flames (TODO: attack based on enemy elemental type)
+		CastFlames(DamageCauserLocation);
+	}
+
 	if (CurrentHealthComponent->IsDead())
 	{
 		MyAIController->UnPossess();
@@ -108,4 +109,12 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 			UAISense_Damage::ReportDamageEvent(GetWorld(), this, MagicProjectileOwner, Damage, MagicProjectileOwner->GetActorLocation(), FVector::ZeroVector);
 		}
 	}
+}
+
+void AEM_Enemy::CastFlames(FVector TargetLocation)
+{
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	GetWorld()->SpawnActor<AEM_FlameCurse>(FlameCurseClass, TargetLocation, FRotator::ZeroRotator, SpawnParameters);
 }

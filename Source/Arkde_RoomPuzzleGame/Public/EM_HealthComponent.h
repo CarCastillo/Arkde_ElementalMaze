@@ -20,6 +20,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "HealthComponent")
 	bool bIsDead;
 
+	UPROPERTY(BlueprintReadOnly, Category = "HealthComponent")
+	bool bIsOnCriticalStatus;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Debug")
 	bool bDebug;
 
@@ -49,6 +52,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDead() const { return bIsDead; };
+
+	UFUNCTION(BlueprintCallable)
+	bool IsOnCriticalStatus() const { return bIsOnCriticalStatus; };
 
 	UFUNCTION(BlueprintCallable)
 	bool IsDamaged();

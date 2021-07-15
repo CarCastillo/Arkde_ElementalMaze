@@ -45,6 +45,7 @@ void AEM_Wisp::BeginPlay()
 	NextPathPoint = GetNextPathPoint();
 	GetWorldTimerManager().SetTimer(EnemyDamageDetectionTimer, this, &AEM_Wisp::VerifyEnemyHealth, 0.2f, true);
 	ColliderComponent->OnComponentBeginOverlap.AddDynamic(this, &AEM_Wisp::HealDamagedEnemy);
+	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Wisp::TakingDamage);
 }
 
 FVector AEM_Wisp::GetNextPathPoint()

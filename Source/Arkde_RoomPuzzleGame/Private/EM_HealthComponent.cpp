@@ -70,6 +70,11 @@ void UEM_HealthComponent::TakingDamage(AActor* DamagedActor, float Damage, const
 		OnDeadDelegate.Broadcast(DamageCauser);
 	}
 
+	if (Health <= 20.0f && Health > 0.0f)
+	{
+		bIsOnCriticalStatus = true;
+	}
+
 	OnHealthChangeDelegate.Broadcast(this, DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 
 	if (bDebug)

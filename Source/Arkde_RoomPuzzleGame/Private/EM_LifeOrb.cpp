@@ -18,7 +18,11 @@ void AEM_LifeOrb::Pickup(AEM_Character* PickupCharacter)
 {
 	Super::Pickup(PickupCharacter);
 
-	PickupCharacter->HealCharacter(HealthValue);
+	if (PickupCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Player)
+	{
+		PickupCharacter->HealCharacter(HealthValue);
 
-	Destroy();
+		Destroy();
+	}
+	
 }
