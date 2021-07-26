@@ -16,6 +16,11 @@ class ARKDE_ROOMPUZZLEGAME_API UEM_MainMenuWidget : public UUserWidget
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MainMenu")
+	FName GameplayLevelName;
+
+protected:
+
 	UFUNCTION(BlueprintCallable, Category = "MainMenu")
 	void NewGame();
 

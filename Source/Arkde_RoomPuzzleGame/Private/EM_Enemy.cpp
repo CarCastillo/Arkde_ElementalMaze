@@ -11,6 +11,7 @@
 #include "AIModule/Classes/Perception/AISense_Damage.h"
 #include "EM_AIController.h"
 #include "EM_FlameCurse.h"
+#include "EM_GameInstance.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -90,14 +91,21 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 	if (CurrentHealthComponent->IsOnCriticalStatus())
 	{
 		FVector DamageCauserLocation = DamageCauser->GetActorLocation();
+		AEM_Character* PlayerCharacter = Cast<AEM_Character>(DamageCauser);
 
 		// cast flames (TODO: attack based on enemy elemental type)
+		// TODO: validate player is not using ultimate (get projectile owner)
 		CastFlames(DamageCauserLocation);
 	}
 
 	if (CurrentHealthComponent->IsDead())
 	{
 		MyAIController->UnPossess();
+
+		if (IsValid(GameInstanceReference))
+		{
+			GameInstanceReference->AddEnemyDefeatedToCounter();
+		}
 	}
 	else
 	{

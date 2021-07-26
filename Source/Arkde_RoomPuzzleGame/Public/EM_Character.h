@@ -19,6 +19,7 @@ class UParticleSystem;
 class UParticleSystemComponent;
 class AEM_Dummy;
 class AEM_Enemy;
+class UEM_GameInstance;
 
 UENUM(Blueprintable)
 enum class EEM_CharacterType : uint8
@@ -124,6 +125,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Melee")
 	FName MeleeSocketName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Levels")
+	FName MainMenuMapName;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Key")
 	TArray<FName> DoorKeys;
 
@@ -163,6 +167,8 @@ protected:
 	FTimerHandle BeginUltimateBehaviorTimer;
 
 	AEM_GameMode* GameModeReference;
+
+	UEM_GameInstance* GameInstanceReference;
 
 	AEM_Character* ReachedCharacter;
 
@@ -222,6 +228,8 @@ protected:
 
 	void StopUltimate();
 
+	void GoToMainMenu();
+
 	UFUNCTION()
 	void MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -277,6 +285,8 @@ public:
 	EEM_CharacterType GetCharacterType() { return CharacterType; };
 
 	void HealCharacter(float HealingPoints);
+
+	bool GetIsUsingUltimate() { return bIsUsingUltimate; };
 
 protected:
 

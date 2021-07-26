@@ -20,6 +20,7 @@
 #include "DrawDebugHelpers.h"
 #include "EM_Dummy.h"
 #include "EM_Enemy.h"
+#include "EM_GameInstance.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -42,6 +43,7 @@ AEM_Character::AEM_Character()
 	UltimateFrequency = 0.5f;
 	UltimatePlayRate = 3.0f;
 	PlayRate = 1.0f;
+	MainMenuMapName = "MainMenuMap";
 
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FPS_CameraComponent"));
 	FPSCameraComponent->bUsePawnControlRotation = true;
@@ -104,6 +106,8 @@ void AEM_Character::InitializeReferences()
 	}
 
 	GameModeReference = Cast<AEM_GameMode>(GetWorld()->GetAuthGameMode());
+
+	GameInstanceReference = Cast<UEM_GameInstance>(GetWorld()->GetGameInstance());
 }
 
 // Called every frame
@@ -142,7 +146,9 @@ void AEM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Melee", IE_Released, this, &AEM_Character::StopMelee);
 
 	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AEM_Character::StartUltimate);
-	PlayerInputComponent->BindAction("Ultimate", IE_Pressed, this, &AEM_Character::StopUltimate);
+	PlayerInputComponent->BindAction("Ultimate", IE_Released, this, &AEM_Character::StopUltimate);
+
+	PlayerInputComponent->BindAction("Exit", IE_Pressed, this, &AEM_Character::GoToMainMenu);
 }
 
 void AEM_Character::MoveForward(float value)
@@ -425,6 +431,16 @@ void AEM_Character::StartUltimate()
 
 void AEM_Character::StopUltimate()
 {
+}
+
+void AEM_Character::GoToMainMenu()
+{
+	if (IsValid(GameInstanceReference))
+	{
+		GameInstanceReference->SaveData();
+	}
+
+	UGameplayStatics::OpenLevel(GetWorld(), MainMenuMapName);
 }
 
 void AEM_Character::SetComboEnabled(bool NewState)
