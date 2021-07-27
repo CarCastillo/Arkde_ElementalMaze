@@ -288,6 +288,8 @@ public:
 
 	bool GetIsUsingUltimate() { return bIsUsingUltimate; };
 
+	UEM_HealthComponent* GetHealthComponent() { return HealthComponent; };
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
