@@ -462,10 +462,12 @@ void AEM_Character::GainUltimateXP(float XPGained)
 	}
 
 	CurrentUltimateXP = FMath::Clamp(CurrentUltimateXP + XPGained, 0.0f, MaxUltimateXP);
+	OnUltimateUpdateDelegate.Broadcast(CurrentUltimateXP, MaxUltimateXP);
 
 	if (CurrentUltimateXP == MaxUltimateXP)
 	{
 		bCanUseUltimate = true;
+		OnUltimateStatusDelegate.Broadcast(true);
 	}
 
 	BP_GainUltimateXP(XPGained);
@@ -474,12 +476,14 @@ void AEM_Character::GainUltimateXP(float XPGained)
 void AEM_Character::UpdateUltimateDuration(float Value)
 {
 	CurrentUltimateDuration = FMath::Clamp(CurrentUltimateDuration - Value, 0.0f, MaxUltimateDuration);
+	OnUltimateUpdateDelegate.Broadcast(CurrentUltimateDuration, MaxUltimateDuration);
 	BP_UpdateUltimateDuration(Value);
 
 	if (CurrentUltimateDuration == 0.0f)
 	{
 		bIsUsingUltimate = false;
 		PlayRate = 1.0f;
+		OnUltimateStatusDelegate.Broadcast(false);
 
 		StopStunEffect();
 

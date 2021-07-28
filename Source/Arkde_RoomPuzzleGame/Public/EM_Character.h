@@ -21,6 +21,9 @@ class AEM_Dummy;
 class AEM_Enemy;
 class UEM_GameInstance;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUltimateUpdateSignature, float, CurrentUltimateXP, float, MaxUltimateXP);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUltimateStatusSignature, bool, bIsAvailable);
+
 UENUM(Blueprintable)
 enum class EEM_CharacterType : uint8
 {
@@ -173,6 +176,14 @@ protected:
 	AEM_Character* ReachedCharacter;
 
 	TArray<AActor*> ReachedEnemiesList;
+
+public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUltimateUpdateSignature OnUltimateUpdateDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUltimateStatusSignature OnUltimateStatusDelegate;
 
 public:
 	// Sets default values for this character's properties
