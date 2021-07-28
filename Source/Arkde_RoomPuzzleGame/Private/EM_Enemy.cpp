@@ -12,6 +12,8 @@
 #include "EM_AIController.h"
 #include "EM_FlameCurse.h"
 #include "EM_GameInstance.h"
+#include "Components/WidgetComponent.h"
+#include "EM_EnemyHealthBar.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -20,6 +22,9 @@ AEM_Enemy::AEM_Enemy()
 	WaitingTimeOnPathPoint = 1.0f;
 	XPValue = 40.0f;
 	LootProbability = 100.0f;
+
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
+	HealthBarWidgetComponent->SetupAttachment(RootComponent);
 }
 
 void AEM_Enemy::BeginPlay()
@@ -30,6 +35,18 @@ void AEM_Enemy::BeginPlay()
 
 	HealthComponent->OnHealthChangeDelegate.AddDynamic(this, &AEM_Enemy::HealthChange);
 	HealthComponent->OnDeadDelegate.AddDynamic(this, &AEM_Enemy::GiveXP);
+
+	UUserWidget* WidgetObject = HealthBarWidgetComponent->GetUserWidgetObject();
+	if (IsValid(WidgetObject))
+	{
+		EnemyHealthBar = Cast<UEM_EnemyHealthBar>(WidgetObject);
+
+		if (IsValid(EnemyHealthBar))
+		{
+			HealthComponent->OnHealthUpdateDelegate.AddDynamic(EnemyHealthBar, &UEM_EnemyHealthBar::UpdateHealth);
+			HideHealthBar();
+		}
+	}
 }
 
 void AEM_Enemy::GiveXP(AActor* DamageCauser)
@@ -88,6 +105,17 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 		return;
 	}
 
+	if (bIsShowingHealthBar)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(HideHealthBarTimer); 
+	}
+	else
+	{
+		ShowHealthBar();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(HideHealthBarTimer, this, &AEM_Enemy::HideHealthBar, 1.0f, false);
+
 	if (CurrentHealthComponent->IsOnCriticalStatus())
 	{
 		FVector DamageCauserLocation = DamageCauser->GetActorLocation();
@@ -106,6 +134,8 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 		{
 			GameInstanceReference->AddEnemyDefeatedToCounter();
 		}
+
+		HideHealthBar();
 	}
 	else
 	{
@@ -125,4 +155,16 @@ void AEM_Enemy::CastFlames(FVector TargetLocation)
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	GetWorld()->SpawnActor<AEM_FlameCurse>(FlameCurseClass, TargetLocation, FRotator::ZeroRotator, SpawnParameters);
+}
+
+void AEM_Enemy::ShowHealthBar()
+{
+	bIsShowingHealthBar = true;
+	EnemyHealthBar->SetVisibility(ESlateVisibility::Visible);
+}
+
+void AEM_Enemy::HideHealthBar()
+{
+	bIsShowingHealthBar = false;
+	EnemyHealthBar->SetVisibility(ESlateVisibility::Hidden);
 }

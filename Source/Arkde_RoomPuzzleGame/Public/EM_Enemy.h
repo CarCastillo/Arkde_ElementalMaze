@@ -11,6 +11,8 @@ class AEM_PathActor;
 class AEM_Item;
 class AEM_AIController;
 class AEM_FlameCurse;
+class UWidgetComponent;
+class UEM_EnemyHealthBar;
 
 /**
  * 
@@ -23,11 +25,17 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_Enemy : public AEM_Character
 public:
 
 	AEM_Enemy();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* HealthBarWidgetComponent;
 	
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "AI|Navigation Path")
 	bool bLoopPath;
+
+	UPROPERTY(BlueprintReadonly, Category = "UI")
+	bool bIsShowingHealthBar;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "AI|Navigation Path")
 	int DirectionIndex;
@@ -52,6 +60,11 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "AI|Controller")
 	AEM_AIController* MyAIController;
+
+	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	UEM_EnemyHealthBar* EnemyHealthBar;
+
+	FTimerHandle HideHealthBarTimer;
 
 protected:
 
@@ -79,4 +92,8 @@ public:
 	int GetDirectionIndex() { return DirectionIndex; };
 
 	float GetWaitingTime() { return WaitingTimeOnPathPoint; };
+
+	void ShowHealthBar();
+
+	void HideHealthBar();
 };
