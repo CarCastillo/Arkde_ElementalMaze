@@ -9,9 +9,8 @@
 class AEM_Character;
 class AEM_SpectatingCamera;
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, int, CollectedKeys);
+
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_GameMode : public AGameModeBase
 {
@@ -35,6 +34,13 @@ protected:
 
 	FTimerHandle CameraBlendTimer;
 
+	TArray<FName> MazeKeys;
+
+public:
+
+	UPROPERTY(BlueprintAssignable)
+	FOnKeyAddedSignature OnKeyAddedDelegate;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -47,6 +53,9 @@ public:
 
 	AEM_GameMode();
 	
+	UFUNCTION()
+	void AddKeyToCharacter(AEM_Character* KeyOwner, FName KeyTag);
+
 	UFUNCTION()
 	void Victory(AEM_Character* Character);
 	

@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class AEM_Character;
+class AEM_GameMode;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Item : public AActor
@@ -15,8 +16,14 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_Item : public AActor
 	GENERATED_BODY()
 	
 protected:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent* MainColliderComponent;
+
+protected:
+
+	UPROPERTY(BlueprintReadOnly)
+	AEM_GameMode* GameModeReference;
 
 public:	
 	// Sets default values for this actor's properties

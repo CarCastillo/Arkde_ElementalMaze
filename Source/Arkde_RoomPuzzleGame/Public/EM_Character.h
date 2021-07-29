@@ -301,6 +301,8 @@ public:
 
 	UEM_HealthComponent* GetHealthComponent() { return HealthComponent; };
 
+	int GetMazeKeys() { return DoorKeys.Num(); };
+
 protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

@@ -13,6 +13,20 @@ AEM_GameMode::AEM_GameMode()
 	BlendTimeDelay = 2.0f;
 }
 
+void AEM_GameMode::AddKeyToCharacter(AEM_Character* KeyOwner, FName KeyTag)
+{
+	if (IsValid(KeyOwner))
+	{
+		KeyOwner->AddKey(KeyTag);
+		int CollectedKeys = KeyOwner->GetMazeKeys();
+
+		if (CollectedKeys == 3)
+		{
+			OnKeyAddedDelegate.Broadcast(CollectedKeys);
+		}
+	}
+}
+
 void AEM_GameMode::BeginPlay()
 {
 	Super::BeginPlay();

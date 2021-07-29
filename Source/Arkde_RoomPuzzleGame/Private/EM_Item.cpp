@@ -4,6 +4,7 @@
 #include "EM_Item.h"
 #include "Components/SphereComponent.h"
 #include "EM_Character.h"
+#include "EM_GameMode.h"
 
 // Sets default values
 AEM_Item::AEM_Item()
@@ -20,6 +21,7 @@ void AEM_Item::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GameModeReference = Cast<AEM_GameMode>(GetWorld()->GetAuthGameMode());
 }
 
 // Called every frame
