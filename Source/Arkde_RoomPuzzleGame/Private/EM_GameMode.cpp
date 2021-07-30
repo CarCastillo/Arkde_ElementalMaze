@@ -10,6 +10,7 @@
 
 AEM_GameMode::AEM_GameMode()
 {
+	MainMenuMapName = "MainMenuMap";
 	BlendTimeDelay = 2.0f;
 }
 
@@ -92,6 +93,9 @@ void AEM_GameMode::Victory(AEM_Character* Character)
 	Character->DisableInput(nullptr);
 
 	MoveCameraToSpectatingPoint(Character, VictoryCamera);
+	OnVictoryDelegate.Broadcast();
+
+	GetWorld()->GetTimerManager().SetTimer(BackToMainMenuTimer, this, &AEM_GameMode::BackToMainMenu, 10.0f, false);
 
 	BP_Victory(Character);
 }
@@ -113,5 +117,14 @@ void AEM_GameMode::GameOver(AEM_Character* Character)
 		GetWorldTimerManager().SetTimer(CameraBlendTimer, CameraBlendTimerDel, BlendTimeDelay, true);
 	}
 
+	OnGameOverDelegate.Broadcast();
+
+	GetWorld()->GetTimerManager().SetTimer(BackToMainMenuTimer, this, &AEM_GameMode::BackToMainMenu, 10.0f, false);
+
 	BP_GameOver(Character);
+}
+
+void AEM_GameMode::BackToMainMenu()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), MainMenuMapName);
 }

@@ -10,6 +10,7 @@ class AEM_Character;
 class AEM_SpectatingCamera;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, int, CollectedKeys);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_GameMode : public AGameModeBase
@@ -24,6 +25,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spectating Camera")
 	float BlendTimeDelay;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Flow")
+	FName MainMenuMapName;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Spectating Camera")
 	AEM_SpectatingCamera* VictoryCamera;
 
@@ -34,12 +38,20 @@ protected:
 
 	FTimerHandle CameraBlendTimer;
 
+	FTimerHandle BackToMainMenuTimer;
+
 	TArray<FName> MazeKeys;
 
 public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnKeyAddedSignature OnKeyAddedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateChangeSignature OnVictoryDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateChangeSignature OnGameOverDelegate;
 
 protected:
 
@@ -61,6 +73,8 @@ public:
 	
 	UFUNCTION()
 	void GameOver(AEM_Character* Character);
+
+	void BackToMainMenu();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void BP_Victory(AEM_Character* Character);
