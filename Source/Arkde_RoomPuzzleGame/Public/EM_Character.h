@@ -20,6 +20,7 @@ class UParticleSystemComponent;
 class AEM_Dummy;
 class AEM_Enemy;
 class UEM_GameInstance;
+class UAudioComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUltimateUpdateSignature, float, CurrentUltimateXP, float, MaxUltimateXP);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUltimateStatusSignature, bool, bIsAvailable);
@@ -54,6 +55,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UParticleSystemComponent* EffectStatusParticleSystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* StepSoundComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
@@ -302,6 +306,8 @@ public:
 	UEM_HealthComponent* GetHealthComponent() { return HealthComponent; };
 
 	int GetMazeKeys() { return DoorKeys.Num(); };
+
+	void PlayStepSound();
 
 protected:
 

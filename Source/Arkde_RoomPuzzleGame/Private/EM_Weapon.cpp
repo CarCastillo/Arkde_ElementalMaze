@@ -3,6 +3,8 @@
 
 #include "EM_Weapon.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEM_Weapon::AEM_Weapon()
@@ -28,6 +30,7 @@ void AEM_Weapon::Tick(float DeltaTime)
 void AEM_Weapon::StartAction()
 {
 	BP_StartAction();
+	PlaySound(MagicProjectileSound);
 }
 
 void AEM_Weapon::StopAction()
@@ -41,6 +44,23 @@ void AEM_Weapon::SetCharacterOwner(ACharacter* NewOwner)
 	{
 		SetOwner(NewOwner);
 		CurrentOwnerCharacter = NewOwner;
+	}
+}
+
+void AEM_Weapon::PlaySound(USoundCue* SoundCue, bool bIs3D, FVector SoundLocation)
+{
+	if (!IsValid(SoundCue))
+	{
+		return;
+	}
+
+	if (bIs3D)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, SoundLocation);
+	}
+	else
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), SoundCue);
 	}
 }
 

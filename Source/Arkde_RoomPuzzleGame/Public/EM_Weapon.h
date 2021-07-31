@@ -8,6 +8,7 @@
 
 class UDamageType;
 class ACharacter;
+class USoundCue;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Weapon : public AActor
@@ -27,6 +28,9 @@ protected:
 	TSubclassOf<UDamageType> DamageType;
 
 	ACharacter* CurrentOwnerCharacter;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* MagicProjectileSound;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,4 +57,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	ACharacter* GetCharacterOwner() { return CurrentOwnerCharacter; };
+
+	UFUNCTION(BlueprintCallable)
+		void PlaySound(USoundCue* SoundCue, bool bIs3D = false, FVector SoundLocation = FVector::ZeroVector);
 };

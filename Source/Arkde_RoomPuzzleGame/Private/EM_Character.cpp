@@ -21,6 +21,7 @@
 #include "EM_Dummy.h"
 #include "EM_Enemy.h"
 #include "EM_GameInstance.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -64,6 +65,9 @@ AEM_Character::AEM_Character()
 	MeleeDetectorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
+
+	StepSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("StepSoundComponent"));
+	StepSoundComponent->SetupAttachment(RootComponent);
 
 	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EffectStatusParticleSystemComponent"));
 	EffectStatusParticleSystemComponent->SetupAttachment(RootComponent);
@@ -563,4 +567,9 @@ void AEM_Character::StopStunEffect()
 void AEM_Character::HealCharacter(float HealingPoints)
 {
 	HealthComponent->RecoverHealth(HealingPoints);
+}
+
+void AEM_Character::PlayStepSound()
+{
+	StepSoundComponent->Play();
 }
