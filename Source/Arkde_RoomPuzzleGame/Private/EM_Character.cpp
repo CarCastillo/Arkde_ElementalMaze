@@ -22,6 +22,7 @@
 #include "EM_Enemy.h"
 #include "EM_GameInstance.h"
 #include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEM_Character::AEM_Character()
@@ -68,6 +69,9 @@ AEM_Character::AEM_Character()
 
 	StepSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("StepSoundComponent"));
 	StepSoundComponent->SetupAttachment(RootComponent);
+
+	VoiceSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("VoiceSoundComponent"));
+	VoiceSoundComponent->SetupAttachment(RootComponent);
 
 	EffectStatusParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EffectStatusParticleSystemComponent"));
 	EffectStatusParticleSystemComponent->SetupAttachment(RootComponent);
@@ -335,11 +339,18 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 			return;
 		}
 
+		if (GetCharacterType() == EEM_CharacterType::CharacterType_Player)
+		{
+			PlayVoiceSound(HurtSound);
+		}
+
 		bIsDamaged = true;
 	}
 
 	if (HealthComponent->IsDead() && GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 	{
+		PlayVoiceSound(DeathSound);
+
 		if (IsValid(GameModeReference))
 		{
 			GameModeReference->GameOver(this);
@@ -418,6 +429,8 @@ void AEM_Character::StartUltimate()
 		CurrentUltimateDuration = MaxUltimateDuration;
 		bCanUseUltimate = false;
 		PlayRate = UltimatePlayRate;
+
+		PlayVoiceSound(UltimateSound);
 
 		if (IsValid(MyAnimInstance) && IsValid(UltimateMontage))
 		{
@@ -572,4 +585,15 @@ void AEM_Character::HealCharacter(float HealingPoints)
 void AEM_Character::PlayStepSound()
 {
 	StepSoundComponent->Play();
+}
+
+void AEM_Character::PlayVoiceSound(USoundCue* VoiceSound)
+{
+	if (!IsValid(VoiceSound))
+	{
+		return;
+	}
+
+	VoiceSoundComponent->SetSound(VoiceSound);
+	VoiceSoundComponent->Play();
 }

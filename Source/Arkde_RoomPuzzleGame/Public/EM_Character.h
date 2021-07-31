@@ -21,6 +21,7 @@ class AEM_Dummy;
 class AEM_Enemy;
 class UEM_GameInstance;
 class UAudioComponent;
+class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUltimateUpdateSignature, float, CurrentUltimateXP, float, MaxUltimateXP);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUltimateStatusSignature, bool, bIsAvailable);
@@ -58,6 +59,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAudioComponent* StepSoundComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UAudioComponent* VoiceSoundComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
@@ -180,6 +184,15 @@ protected:
 	AEM_Character* ReachedCharacter;
 
 	TArray<AActor*> ReachedEnemiesList;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* DeathSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* UltimateSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* HurtSound;
 
 public:
 
@@ -308,6 +321,8 @@ public:
 	int GetMazeKeys() { return DoorKeys.Num(); };
 
 	void PlayStepSound();
+
+	void PlayVoiceSound(USoundCue* VoiceSound);
 
 protected:
 
