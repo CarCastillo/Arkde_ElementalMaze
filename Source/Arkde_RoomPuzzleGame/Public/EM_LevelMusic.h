@@ -9,6 +9,7 @@
 class UAudioComponent;
 class UBillboardComponent;
 class AEM_GameMode;
+class AEM_Character;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_LevelMusic : public AActor
@@ -25,8 +26,14 @@ protected:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Music")
+	FName CriticalStatusParamName;
+
 	UPROPERTY(BlueprintReadOnly, Category = "References")
 	AEM_GameMode* GameModeReference;
+
+	UPROPERTY(BlueprintReadOnly, Category = "References")
+	AEM_Character* PlayerCharacterReference;
 
 public:	
 	// Sets default values for this actor's properties
@@ -38,4 +45,7 @@ protected:
 
 	UFUNCTION()
 	void StopLevelMusic();
+
+	UFUNCTION()
+	void ChangeLevelMusic(bool bIsPlayerInCriticalStatus);
 };

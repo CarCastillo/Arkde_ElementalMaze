@@ -344,6 +344,22 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 		bIsDamaged = true;
 	}
 
+	if (HealthComponent->IsOnCriticalStatus()) {
+		bIsOnCriticalStatus = true;
+		if (GetCharacterType() == EEM_CharacterType::CharacterType_Player)
+		{
+			OnPlayerCriticalHealthStatusDelegate.Broadcast(bIsOnCriticalStatus);
+		}
+	}
+	else
+	{
+		bIsOnCriticalStatus = false;
+		if (GetCharacterType() == EEM_CharacterType::CharacterType_Player)
+		{
+			OnPlayerCriticalHealthStatusDelegate.Broadcast(bIsOnCriticalStatus);
+		}
+	}
+
 	if (HealthComponent->IsDead())
 	{
 		PlayVoiceSound(DeathSound);

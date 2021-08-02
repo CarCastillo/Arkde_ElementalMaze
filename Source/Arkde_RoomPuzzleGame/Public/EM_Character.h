@@ -25,6 +25,7 @@ class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUltimateUpdateSignature, float, CurrentUltimateXP, float, MaxUltimateXP);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUltimateStatusSignature, bool, bIsAvailable);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerCriticalHealthStatus, bool, bIsPlayerInCriticalStatus);
 
 UENUM(Blueprintable)
 enum class EEM_CharacterType : uint8
@@ -78,6 +79,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Melee")
 	bool bIsComboEnabled;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Health Status")
+	bool bIsOnCriticalStatus;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Over")
 	bool bHasToDestroy;
@@ -204,6 +208,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnUltimateStatusSignature OnUltimateStatusDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerCriticalHealthStatus OnPlayerCriticalHealthStatusDelegate;
 
 public:
 	// Sets default values for this character's properties
