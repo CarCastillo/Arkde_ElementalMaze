@@ -6,9 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "EM_MainMenuWidget.generated.h"
 
-/**
- * 
- */
+class USoundCue;
+
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API UEM_MainMenuWidget : public UUserWidget
 {
@@ -18,6 +17,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MainMenu")
 	FName GameplayLevelName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* MainMenuMusic;
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeWidget();
 
 protected:
 

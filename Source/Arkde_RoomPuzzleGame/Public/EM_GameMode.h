@@ -8,6 +8,7 @@
 
 class AEM_Character;
 class AEM_SpectatingCamera;
+class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, int, CollectedKeys);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
@@ -42,6 +43,12 @@ protected:
 
 	TArray<FName> MazeKeys;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* VictoryMusic;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* GameOverMusic;
+
 public:
 
 	UPROPERTY(BlueprintAssignable)
@@ -60,6 +67,8 @@ protected:
 	void SetupSpectatingCameras();
 
 	void MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_SpectatingCamera* SpectatingCamera);
+
+	void PlayMusic(USoundCue* MusicCue);
  
 public:
 

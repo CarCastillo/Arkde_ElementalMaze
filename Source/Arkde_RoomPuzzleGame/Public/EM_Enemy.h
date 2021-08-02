@@ -13,6 +13,7 @@ class AEM_AIController;
 class AEM_FlameCurse;
 class UWidgetComponent;
 class UEM_EnemyHealthBar;
+class USoundCue;
 
 /**
  * 
@@ -65,6 +66,9 @@ protected:
 	UEM_EnemyHealthBar* EnemyHealthBar;
 
 	FTimerHandle HideHealthBarTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* ElementalAttackSound;
 
 protected:
 

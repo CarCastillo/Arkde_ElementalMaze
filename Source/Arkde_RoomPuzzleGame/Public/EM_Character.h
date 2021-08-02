@@ -192,6 +192,9 @@ protected:
 	USoundCue* UltimateSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* UltimateCastingSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	USoundCue* HurtSound;
 
 public:

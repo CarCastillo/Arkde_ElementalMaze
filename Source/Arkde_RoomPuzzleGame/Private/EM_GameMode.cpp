@@ -7,6 +7,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "EM_SpectatingCamera.h"
+#include "Sound/SoundCue.h"
 
 AEM_GameMode::AEM_GameMode()
 {
@@ -88,12 +89,23 @@ void AEM_GameMode::MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_Spe
 	}
 }
 
+void AEM_GameMode::PlayMusic(USoundCue* MusicCue)
+{
+	if (!IsValid(MusicCue))
+	{
+		return;
+	}
+
+	UGameplayStatics::PlaySound2D(GetWorld(), MusicCue);
+}
+
 void AEM_GameMode::Victory(AEM_Character* Character)
 {
 	Character->DisableInput(nullptr);
 
 	MoveCameraToSpectatingPoint(Character, VictoryCamera);
 	OnVictoryDelegate.Broadcast();
+	PlayMusic(VictoryMusic);
 
 	GetWorld()->GetTimerManager().SetTimer(BackToMainMenuTimer, this, &AEM_GameMode::BackToMainMenu, 10.0f, false);
 
@@ -118,8 +130,9 @@ void AEM_GameMode::GameOver(AEM_Character* Character)
 	}
 
 	OnGameOverDelegate.Broadcast();
+	PlayMusic(GameOverMusic);
 
-	GetWorld()->GetTimerManager().SetTimer(BackToMainMenuTimer, this, &AEM_GameMode::BackToMainMenu, 10.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(BackToMainMenuTimer, this, &AEM_GameMode::BackToMainMenu, 15.0f, false);
 
 	BP_GameOver(Character);
 }

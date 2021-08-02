@@ -6,6 +6,17 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "GameFramework/PlayerController.h"
 #include "EM_GameInstance.h"
+#include "Sound/SoundCue.h"
+
+void UEM_MainMenuWidget::InitializeWidget()
+{
+	if (!IsValid(MainMenuMusic))
+	{
+		return;
+	}
+
+	UGameplayStatics::PlaySound2D(GetWorld(), MainMenuMusic);
+}
 
 void UEM_MainMenuWidget::NewGame()
 {

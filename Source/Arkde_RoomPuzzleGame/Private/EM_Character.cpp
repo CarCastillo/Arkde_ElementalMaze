@@ -338,22 +338,22 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 		if (bIsDamaged) {
 			return;
 		}
-
-		if (GetCharacterType() == EEM_CharacterType::CharacterType_Player)
-		{
-			PlayVoiceSound(HurtSound);
-		}
+		
+		PlayVoiceSound(HurtSound);
 
 		bIsDamaged = true;
 	}
 
-	if (HealthComponent->IsDead() && GetCharacterType() == EEM_CharacterType::CharacterType_Player)
+	if (HealthComponent->IsDead())
 	{
 		PlayVoiceSound(DeathSound);
-
-		if (IsValid(GameModeReference))
+		
+		if (GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 		{
-			GameModeReference->GameOver(this);
+			if (IsValid(GameModeReference))
+			{
+				GameModeReference->GameOver(this);
+			}
 		}
 	}
 }
@@ -402,7 +402,6 @@ void AEM_Character::SetMeleeState(bool NewState)
 
 void AEM_Character::SetPoisonStatusEffect()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Character has been poisoned!");
 	EffectStatusParticleSystemComponent = UGameplayStatics::SpawnEmitterAttached(PoisonEffect, RootComponent);
 	GetWorldTimerManager().SetTimer(StatusEffectTimer, this, &AEM_Character::RemovePoisonStatusEffect, 5.0f, true);
 	GetWorldTimerManager().SetTimer(StatusEffectDPSTimer, this, &AEM_Character::MakeDamagePerSecond, 1.0f, true);
@@ -413,12 +412,10 @@ void AEM_Character::RemovePoisonStatusEffect()
 	GetWorldTimerManager().ClearTimer(StatusEffectTimer);
 	GetWorldTimerManager().ClearTimer(StatusEffectDPSTimer);
 	EffectStatusParticleSystemComponent->Deactivate();
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, "Character is not poisoned anymore!");
 }
 
 void AEM_Character::MakeDamagePerSecond()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, "Character received 10 damage!");
 	AActor::TakeDamage(10.0f, FDamageEvent(), GetInstigatorController(), nullptr);
 }
 
@@ -431,6 +428,7 @@ void AEM_Character::StartUltimate()
 		PlayRate = UltimatePlayRate;
 
 		PlayVoiceSound(UltimateSound);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), UltimateCastingSound, GetActorLocation());
 
 		if (IsValid(MyAnimInstance) && IsValid(UltimateMontage))
 		{
@@ -539,7 +537,7 @@ void AEM_Character::StartStunEffect()
 	FVector SweepStart = GetActorLocation();
 	FVector SweepEnd = GetActorLocation();
 	FCollisionShape ColliderSphere = FCollisionShape::MakeSphere(500.0f);
-	DrawDebugSphere(GetWorld(), GetActorLocation(), ColliderSphere.GetSphereRadius(), 50, FColor::Purple, false, MaxUltimateDuration);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), ColliderSphere.GetSphereRadius(), 50, FColor::Purple, false, MaxUltimateDuration);
 	bool isHit = GetWorld()->SweepMultiByChannel(OutHits, SweepStart, SweepEnd, FQuat::Identity, ECC_WorldStatic, ColliderSphere);
 
 	if (isHit)

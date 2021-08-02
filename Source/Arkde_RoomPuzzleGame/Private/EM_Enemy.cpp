@@ -14,6 +14,8 @@
 #include "EM_GameInstance.h"
 #include "Components/WidgetComponent.h"
 #include "EM_EnemyHealthBar.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -122,8 +124,13 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 		AEM_Character* PlayerCharacter = Cast<AEM_Character>(DamageCauser);
 
 		// cast flames (TODO: attack based on enemy elemental type)
-		// TODO: validate player is not using ultimate (get projectile owner)
+		// TODO: validate player is not using ultimate (get projectile owner) OR set bool during stun status
 		CastFlames(DamageCauserLocation);
+
+		if (IsValid(ElementalAttackSound))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ElementalAttackSound, DamageCauserLocation);
+		}
 	}
 
 	if (CurrentHealthComponent->IsDead())
