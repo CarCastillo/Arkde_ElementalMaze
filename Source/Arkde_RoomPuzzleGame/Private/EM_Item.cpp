@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "EM_Character.h"
 #include "EM_GameMode.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEM_Item::AEM_Item()
@@ -48,5 +50,10 @@ void AEM_Item::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void AEM_Item::Pickup(AEM_Character* PickupCharacter)
 {
+	if (IsValid(PickupSound))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupSound, PickupCharacter->GetActorLocation());
+	}
+
 	BP_Pickup(PickupCharacter);
 }

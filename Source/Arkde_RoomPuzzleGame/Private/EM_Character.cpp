@@ -224,6 +224,11 @@ void AEM_Character::StartWeaponAction()
 
 	if (IsValid(CurrentWeapon))
 	{
+		if (IsValid(MyAnimInstance) && IsValid(ProjectilAttackMontage))
+		{
+			MyAnimInstance->Montage_Play(ProjectilAttackMontage);
+		}
+
 		CurrentWeapon->StartAction();
 	}
 }
@@ -324,6 +329,12 @@ void AEM_Character::MakeMeleeDamage(UPrimitiveComponent* OverlappedComponent, AA
 			{
 				OtherActorMeshComp->SetSimulatePhysics(true);
 				OtherActorMeshComp->AddImpulse(GetActorForwardVector() * ForceOfImpulse);
+
+				if (IsValid(WallFallSound))
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), WallFallSound, OtherActor->GetActorLocation());
+				}
+
 				FakeWallTimerDel = FTimerDelegate::CreateUObject(this, &AEM_Character::DestroyFakeWall, OtherActor);
 				GetWorldTimerManager().SetTimer(FakeWallDestroyTimer, FakeWallTimerDel, FakeWallDestroyDelay, true);
 			}
@@ -338,8 +349,6 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 		if (bIsDamaged) {
 			return;
 		}
-		
-		PlayVoiceSound(HurtSound);
 
 		bIsDamaged = true;
 	}
@@ -371,6 +380,9 @@ void AEM_Character::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AActo
 				GameModeReference->GameOver(this);
 			}
 		}
+	}
+	else {
+		PlayVoiceSound(HurtSound);
 	}
 }
 

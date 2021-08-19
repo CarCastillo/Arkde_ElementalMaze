@@ -9,6 +9,7 @@
 class USphereComponent;
 class AEM_Character;
 class AEM_GameMode;
+class USoundCue;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_Item : public AActor
@@ -19,6 +20,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent* MainColliderComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* PickupSound;
 
 protected:
 

@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "EM_HealthComponent.h"
+#include "Sound/SoundCue.h"
 
 AEM_MiasmaBarrel::AEM_MiasmaBarrel()
 {
@@ -44,6 +45,11 @@ void AEM_MiasmaBarrel::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AA
 {
 	if (HealthComponent->IsDead())
 	{
+		if (IsValid(ExplosionSound))
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
+		}
+
 		SetExplosionEffect(BarrelDestroyTime);
 		MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 	}

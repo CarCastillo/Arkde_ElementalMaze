@@ -159,6 +159,9 @@ protected:
 	UAnimMontage* MeleeMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* ProjectilAttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* UltimateMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effects")
@@ -200,6 +203,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	USoundCue* HurtSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* WallFallSound;
 
 public:
 

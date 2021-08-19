@@ -10,6 +10,7 @@ class UBoxComponent;
 class USphereComponent;
 class UStaticMeshComponent;
 class UEM_HealthComponent;
+class USoundCue;
 
 /**
  * 
@@ -36,6 +37,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Explosion")
 	float BarrelDestroyTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	USoundCue* ExplosionSound;
 	
 protected:
 
