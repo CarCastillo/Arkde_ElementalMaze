@@ -12,6 +12,7 @@ void UEM_HUDObjectivesContainer::InitializeWidget()
 	if (IsValid(GameModeReference))
 	{
 		GameModeReference->OnKeyAddedDelegate.AddDynamic(this, &UEM_HUDObjectivesContainer::UpdateItemObjectives);
+		GameModeReference->OnEnemiesDefeatedDelegate.AddDynamic(this, &UEM_HUDObjectivesContainer::UpdateEnemyObjectives);
 	}
 }
 
@@ -39,6 +40,21 @@ void UEM_HUDObjectivesContainer::UpdateItemObjectives(int RequiredItems)
 			{
 				CurrentObjective->ObjectiveCompleted();
 			}
+		}
+	}
+}
+
+void UEM_HUDObjectivesContainer::UpdateEnemyObjectives()
+{
+	int ObjectiveIndex = 1;
+
+	if (Objectives.IsValidIndex(ObjectiveIndex))
+	{
+		UEM_HUDObjective* CurrentObjective = Objectives[ObjectiveIndex];
+
+		if (IsValid(CurrentObjective))
+		{
+			CurrentObjective->ObjectiveCompleted();
 		}
 	}
 }

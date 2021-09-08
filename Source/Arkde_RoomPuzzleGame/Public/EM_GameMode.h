@@ -11,6 +11,7 @@ class AEM_SpectatingCamera;
 class USoundCue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, int, CollectedKeys);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemiesDefeatedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
 
 UCLASS()
@@ -43,6 +44,8 @@ protected:
 
 	TArray<FName> MazeKeys;
 
+	TArray<AActor*> EnemiesDefeated;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
 	USoundCue* VictoryMusic;
 
@@ -53,6 +56,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnKeyAddedSignature OnKeyAddedDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnEnemiesDefeatedSignature OnEnemiesDefeatedDelegate;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameStateChangeSignature OnVictoryDelegate;
@@ -66,6 +72,8 @@ protected:
 
 	void SetupSpectatingCameras();
 
+	int GetEnemiesCount();
+
 	void MoveCameraToSpectatingPoint(AEM_Character* Character, AEM_SpectatingCamera* SpectatingCamera);
 
 	void PlayMusic(USoundCue* MusicCue);
@@ -76,6 +84,9 @@ public:
 	
 	UFUNCTION()
 	void AddKeyToCharacter(AEM_Character* KeyOwner, FName KeyTag);
+
+	UFUNCTION()
+	void VerifyEnemiesDefeated(AActor* Enemy);
 
 	UFUNCTION()
 	void Victory(AEM_Character* Character);

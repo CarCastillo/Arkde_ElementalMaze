@@ -33,4 +33,7 @@ public:
 	UFUNCTION()
 	void UpdateItemObjectives(int RequiredItems);
 
+	UFUNCTION()
+	void UpdateEnemyObjectives();
+
 };

@@ -36,6 +36,7 @@ void AEM_GameMode::VerifyEnemiesDefeated(AActor* Enemy)
 
 	if (EnemiesDefeated.Num() == GetEnemiesCount())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ALL ENEMIES DEFEATED"));
 		OnEnemiesDefeatedDelegate.Broadcast();
 	}
 }

@@ -16,6 +16,7 @@
 #include "EM_EnemyHealthBar.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "EM_GameMode.h"
 
 AEM_Enemy::AEM_Enemy() 
 {
@@ -140,6 +141,11 @@ void AEM_Enemy::HealthChange(UEM_HealthComponent* CurrentHealthComponent, AActor
 		if (IsValid(GameInstanceReference))
 		{
 			GameInstanceReference->AddEnemyDefeatedToCounter();
+		}
+
+		if (IsValid(GameModeReference))
+		{
+			GameModeReference->VerifyEnemiesDefeated(this);
 		}
 
 		HideHealthBar();
