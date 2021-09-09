@@ -10,6 +10,7 @@ class USceneComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
 class UTextRenderComponent;
+class AEM_GameMode;
 
 /**
  * 
@@ -20,6 +21,7 @@ class ARKDE_ROOMPUZZLEGAME_API AEM_LaunchPad : public AEM_Item
 	GENERATED_BODY()
 
 protected:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* CustomRootComponent;
 
@@ -31,6 +33,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UTextRenderComponent* TextRenderComponent;
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Launch Pad")
 	float LaunchAngle;
@@ -48,5 +52,11 @@ public:
 
 protected:
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	virtual void Pickup(AEM_Character* CharacterToLaunch) override;
+
+	UFUNCTION()
+	void EnableLaunchPad();
 };

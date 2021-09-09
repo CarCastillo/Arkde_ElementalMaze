@@ -25,7 +25,9 @@ void AEM_GameMode::AddKeyToCharacter(AEM_Character* KeyOwner, FName KeyTag)
 
 		if (CollectedKeys == 3)
 		{
+			bTotalEnergyCollected = true;
 			OnKeyAddedDelegate.Broadcast(CollectedKeys);
+			NotifyObjectivesCompletedStatus();
 		}
 	}
 }
@@ -37,6 +39,15 @@ void AEM_GameMode::VerifyEnemiesDefeated(AActor* Enemy)
 	if (EnemiesDefeated.Num() == GetEnemiesCount())
 	{
 		OnEnemiesDefeatedDelegate.Broadcast();
+		NotifyObjectivesCompletedStatus();
+	}
+}
+
+void AEM_GameMode::NotifyObjectivesCompletedStatus()
+{
+	if (bTotalEnergyCollected && EnemiesDefeated.Num() == GetEnemiesCount())
+	{
+		OnGameObjectivesCompletedDelegate.Broadcast();
 	}
 }
 

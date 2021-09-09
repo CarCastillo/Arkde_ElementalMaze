@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "EM_Character.h"
+#include "EM_GameMode.h"
 
 AEM_LaunchPad::AEM_LaunchPad()
 {
@@ -15,8 +16,11 @@ AEM_LaunchPad::AEM_LaunchPad()
 	CustomRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = CustomRootComponent;
 
-	LaunchPadColliderComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("LaunchPadColliderComponent"));
 	MainColliderComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	MainColliderComponent->SetupAttachment(RootComponent);
+
+	LaunchPadColliderComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("LaunchPadColliderComponent"));
+	LaunchPadColliderComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	LaunchPadColliderComponent->SetupAttachment(RootComponent);
 
 	LaunchPadMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LaunchPadMeshComponent"));
@@ -32,12 +36,24 @@ void AEM_LaunchPad::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AEM_LaunchPad::BeginPlay()
+{
+	Super::BeginPlay();
+
+	GameModeReference->OnGameObjectivesCompletedDelegate.AddDynamic(this, &AEM_LaunchPad::EnableLaunchPad);
+}
+
 void AEM_LaunchPad::Pickup(AEM_Character* CharacterToLaunch)
 {
 	Super::Pickup(CharacterToLaunch);
 
 	TextRenderComponent->SetVisibility(true);
 	CharacterToLaunch->CurrentLaunchPad = this;
+}
+
+void AEM_LaunchPad::EnableLaunchPad()
+{
+	LaunchPadColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
 void AEM_LaunchPad::LaunchPlayer(AEM_Character* CharacterToLaunch)
@@ -58,7 +74,7 @@ void AEM_LaunchPad::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		AEM_Character* OverlappedCharacter = Cast<AEM_Character>(OtherActor);
 
-		if (IsValid(OverlappedCharacter))
+		if (IsValid(OverlappedCharacter) && OverlappedCharacter->GetCharacterType() == EEM_CharacterType::CharacterType_Player)
 		{
 			OverlappedCharacter->CurrentLaunchPad = nullptr;
 

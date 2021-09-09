@@ -8,6 +8,8 @@
 
 class UBoxComponent;
 class AEM_GameMode;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_VictoryZone : public AActor
@@ -18,6 +20,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UBoxComponent* VictoryZoneComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UParticleSystemComponent* PortalParticleSystemComponent;
 
 protected:
 
@@ -30,6 +35,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void ActivatePortal();
 
 public:	
 	// Called every frame

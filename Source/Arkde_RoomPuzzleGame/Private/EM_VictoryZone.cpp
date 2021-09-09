@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "EM_Character.h"
 #include "EM_GameMode.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AEM_VictoryZone::AEM_VictoryZone()
@@ -13,8 +14,13 @@ AEM_VictoryZone::AEM_VictoryZone()
 	PrimaryActorTick.bCanEverTick = true;
 
 	VictoryZoneComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("VictoryZoneComponent"));
+	VictoryZoneComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RootComponent = VictoryZoneComponent;
 	VictoryZoneComponent->SetBoxExtent(FVector(100.0f));
+
+	PortalParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PortalParticleSystemComponent"));
+	PortalParticleSystemComponent->SetupAttachment(RootComponent);
+	PortalParticleSystemComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -23,6 +29,14 @@ void AEM_VictoryZone::BeginPlay()
 	Super::BeginPlay();
 	
 	GameModeReference = Cast<AEM_GameMode>(GetWorld()->GetAuthGameMode());
+
+	GameModeReference->OnGameObjectivesCompletedDelegate.AddDynamic(this, &AEM_VictoryZone::ActivatePortal);
+}
+
+void AEM_VictoryZone::ActivatePortal()
+{
+	PortalParticleSystemComponent->Activate();
+	VictoryZoneComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
 // Called every frame

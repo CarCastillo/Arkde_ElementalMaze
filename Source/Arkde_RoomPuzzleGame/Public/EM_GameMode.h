@@ -13,6 +13,7 @@ class USoundCue;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyAddedSignature, int, CollectedKeys);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemiesDefeatedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameStateChangeSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameObjectivesCompletedSignature);
 
 UCLASS()
 class ARKDE_ROOMPUZZLEGAME_API AEM_GameMode : public AGameModeBase
@@ -26,6 +27,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spectating Camera")
 	float BlendTimeDelay;
+
+	bool bTotalEnergyCollected;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Flow")
 	FName MainMenuMapName;
@@ -66,6 +69,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameStateChangeSignature OnGameOverDelegate;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnGameObjectivesCompletedSignature OnGameObjectivesCompletedDelegate;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -87,6 +93,9 @@ public:
 
 	UFUNCTION()
 	void VerifyEnemiesDefeated(AActor* Enemy);
+
+	UFUNCTION()
+	void NotifyObjectivesCompletedStatus();
 
 	UFUNCTION()
 	void Victory(AEM_Character* Character);
