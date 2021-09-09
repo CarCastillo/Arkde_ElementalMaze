@@ -24,8 +24,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setup")
 	FName GameOverMessage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setup")
+	FName ObjectivesCompletedMessage;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Setup")
 	AEM_GameMode* GameModeReference;
+
+	FTimerHandle HideMessageTimer;
 
 public:
 
@@ -37,5 +42,10 @@ public:
 
 	UFUNCTION()
 	void OnGameOver();
+
+	UFUNCTION()
+	void OnObjectivesCompleted();
+
+	void HideMessage();
 
 };
