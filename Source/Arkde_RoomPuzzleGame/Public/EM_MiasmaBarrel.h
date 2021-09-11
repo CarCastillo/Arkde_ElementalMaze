@@ -11,6 +11,8 @@ class USphereComponent;
 class UStaticMeshComponent;
 class UEM_HealthComponent;
 class USoundCue;
+class UParticleSystem;
+class UParticleSystemComponent;
 
 /**
  * 
@@ -29,6 +31,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* BarrelMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UParticleSystemComponent* SteamParticleSystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UEM_HealthComponent* HealthComponent;

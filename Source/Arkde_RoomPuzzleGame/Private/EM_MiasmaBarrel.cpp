@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "EM_HealthComponent.h"
 #include "Sound/SoundCue.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AEM_MiasmaBarrel::AEM_MiasmaBarrel()
 {
@@ -29,6 +30,9 @@ AEM_MiasmaBarrel::AEM_MiasmaBarrel()
 
 	BarrelMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrelMeshComponent"));
 	BarrelMeshComponent->SetupAttachment(RootComponent);
+
+	SteamParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SteamParticleSystemComponent"));
+	SteamParticleSystemComponent->SetupAttachment(RootComponent);
 
 	HealthComponent = CreateDefaultSubobject<UEM_HealthComponent>(TEXT("HealthComponent"));
 }
@@ -52,6 +56,7 @@ void AEM_MiasmaBarrel::OnHealthChange(UEM_HealthComponent* MyHealthComponent, AA
 
 		SetExplosionEffect(BarrelDestroyTime);
 		MiasmaColliderComponent->SetCollisionResponseToAllChannels(ECR_Overlap);
+		SteamParticleSystemComponent->Deactivate();
 	}
 }
 
